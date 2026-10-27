@@ -691,7 +691,7 @@
         <tr><td class="k">Planning</td><td class="old">Story Draft</td><td class="arr">&rarr;</td><td class="new"><strong>Draft History plus a GTFA,</strong> and at least two hours of planning</td></tr>
         <tr><td class="k">Between the legs</td><td class="old">Milestones distilled from Model A</td><td class="arr">&rarr;</td><td class="new"><strong>No milestones.</strong> Leg B is steered with intent level hints</td></tr>
         <tr><td class="k">Media</td><td class="old">Media needed for at least one core requirement</td><td class="arr">&rarr;</td><td class="new"><strong>At least 3 multimodal inputs,</strong> mostly images that need real visual reading</td></tr>
-        <tr><td class="k">Model A failure</td><td class="old">At least 50% of the total rubric weight</td><td class="arr">&rarr;</td><td class="new"><strong>At least 30%</strong> of the final rubric score, 50% or more preferred</td></tr>
+        <tr><td class="k">Model A failure</td><td class="old">At least 50% of the total rubric weight</td><td class="arr">&rarr;</td><td class="new"><strong>At least 30%</strong> of the objective rubric score, 50% or more preferred</td></tr>
         <tr><td class="k">Objective rubrics</td><td class="old">Outcome based criteria with trace coverage encouraged</td><td class="arr">&rarr;</td><td class="new"><strong>80/20 rule</strong> and literal matching. Existence checks fail the task</td></tr>
       </table>
       <div class="highlight-box" style="margin-top:30px;"><strong>What carries over:</strong> universe first design, the two legs, valid vs invalid failures, the rubric fundamentals, the golden as the reference, and a presentation only subjective block.</div>
@@ -915,7 +915,7 @@
 <div class="slide-fit"><div class="slide full" id="slide-6">
   <div class="corner-tl"></div>
   <div class="corner-br"></div>
-  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>1.2.2 Select the Multimodal Inputs &middot; Hard Client Requirements</span></div>
+  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>1.1.2 Rest of the Parameters &middot; 1.2.2 Select the Multimodal Inputs &middot; Hard Client Requirements</span></div>
   <div class="slide-inner">
     <div class="content">
       <div class="section-num">Section 3</div>
@@ -945,11 +945,12 @@
         </div>
         <div>
           <ul style="margin-top:4px;">
-            <li style="font-size:22px;margin-bottom:15px;"><strong>Use every assigned input modality,</strong> each carrying a distinct part of the answer</li>
+            <li style="font-size:22px;margin-bottom:15px;"><strong>Use every assigned input modality,</strong> each carrying a distinct part of the answer. Content decides the modality: text read off a photo is text</li>
+            <li style="font-size:22px;margin-bottom:15px;"><strong>Counting the three:</strong> preseeded images count, and using them is optional. A <span class="mono" style="font-size:19px;">.txt</span> file never counts</li>
             <li style="font-size:22px;margin-bottom:15px;"><strong>Mostly real visual reading:</strong> photographs, diagrams, charts, maps, real objects. Screenshots of text, never the majority</li>
             <li style="font-size:22px;margin-bottom:15px;"><strong>Every file intentional:</strong> required signal, or a distractor or noise you designed</li>
             <li style="font-size:22px;margin-bottom:15px;"><strong>Reconcile with the universe:</strong> a value read off the media leads to records the model has to read, not just write to</li>
-            <li style="font-size:22px;margin-bottom:0;"><strong>Messy but gradable:</strong> duplicates, awkward angles and names like <span class="mono" style="font-size:19px;">IMG_0427.jpg</span> are normal. Input nobody can read is your defect</li>
+            <li style="font-size:22px;margin-bottom:0;"><strong>Messy but gradable:</strong> duplicates, awkward angles and names like <span class="mono" style="font-size:19px;">IMG_0427.jpg</span> are normal, as long as every file fits the scenario. Input nobody can read is your defect</li>
           </ul>
         </div>
       </div>
@@ -1093,14 +1094,15 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
       <div style="display:grid;grid-template-columns:640px 1fr;gap:40px;margin-top:28px;align-items:start;">
         <div class="mini-block">
           <h3>The failure bar</h3>
-          <div style="font-size:14px;color:#8fa3c7;margin-bottom:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;">Model A rubric score</div>
+          <div style="font-size:14px;color:#8fa3c7;margin-bottom:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;">Model A score &middot; objective block</div>
           <div class="gauge">
             <div class="gauge-track"><div class="z z1" style="width:50%;"></div><div class="z z2" style="width:20%;"></div><div class="z z3" style="width:30%;"></div><div class="gauge-mark" style="left:calc(70% - 1px);"></div></div>
             <div class="gauge-labels"><span style="left:25%;color:#8ef0b4;">preferred</span><span style="left:60%;color:#b8cce8;">accepted</span><span style="left:85%;color:#ff8a96;">trivial task</span></div>
             <div class="gauge-labels" style="margin-top:0;height:18px;font-size:13px;color:#6f86b0;"><span class="l0" style="left:0;">0%</span><span style="left:50%;">50%</span><span style="left:70%;color:#fff;">70%</span><span class="l100" style="left:100%;">100%</span></div>
           </div>
           <ul style="margin-top:18px;">
-            <li style="font-size:20px;margin-bottom:10px;">Genuine failures worth <strong>at least 30%</strong> of the final rubric score, 50% or more preferred</li>
+            <li style="font-size:20px;margin-bottom:10px;">Genuine failures worth <strong>at least 30%</strong> of the objective rubric score, 50% or more preferred</li>
+            <li style="font-size:20px;margin-bottom:10px;"><strong>How it is counted:</strong> the weight of positives rated Not Present plus negatives rated Present, over the total positive weight</li>
             <li style="font-size:20px;margin-bottom:10px;">A Model A score <strong>above 70%</strong> fails as a trivial task</li>
             <li style="font-size:20px;margin-bottom:0;">Below the bar? Back to planning, then rerun. Never pad or misrate the rubrics</li>
           </ul>
@@ -1112,6 +1114,7 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
               <div style="font-size:14px;font-weight:800;letter-spacing:0.12em;color:#6fe39a;text-transform:uppercase;margin-bottom:8px;">&#10003; Valid: its own decision</div>
               <div style="font-size:18px;color:#c8d6ec;line-height:1.4;">
                 <div style="margin-bottom:8px;">Misread a legible value</div>
+                <div style="margin-bottom:8px;">Opened the file but missed clear evidence</div>
                 <div style="margin-bottom:8px;">Claimed from a filename it never opened</div>
                 <div style="margin-bottom:8px;">Missed reachable universe evidence</div>
                 <div style="margin-bottom:8px;">Trusted one side of a reconciliation</div>
@@ -1122,6 +1125,7 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
               <div style="font-size:14px;font-weight:800;letter-spacing:0.12em;color:#ff8a96;text-transform:uppercase;margin-bottom:8px;">&#10007; Not valid: your defect</div>
               <div style="font-size:18px;color:#c8d6ec;line-height:1.4;">
                 <div style="margin-bottom:8px;">The run broke: <code>prompt-error</code>, timeout</div>
+                <div style="margin-bottom:8px;">Inputs it never got to open</div>
                 <div style="margin-bottom:8px;">A <code>.heic</code> or other forbidden input</div>
                 <div style="margin-bottom:8px;">A requirement only in the Desired Outcome</div>
                 <div style="margin-bottom:8px;">Media no person could read</div>
@@ -1175,7 +1179,7 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
           <div><strong style="color:#5eb3ff;">Positively phrased.</strong> The signed weight carries the polarity</div>
           <div><strong style="color:#5eb3ff;">Literal.</strong> Every filename, ID, value and date copied from the source</div>
           <div><strong style="color:#5eb3ff;">Never existence.</strong> Content implies it. An existence check fails the task</div>
-          <div><strong style="color:#5eb3ff;">Intent focused.</strong> Only what the prompt and the scenario require</div>
+          <div><strong style="color:#5eb3ff;">Intent focused, exact fit.</strong> Only what the prompt and the scenario require. Every valid answer passes, a wrong one fails</div>
         </div>
       </div>
       <div class="dark-card" style="margin-top:22px;padding:14px 18px;">
@@ -1187,7 +1191,7 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
           <span style="font-size:14px;font-weight:800;letter-spacing:0.12em;color:#7eb8ff;text-transform:uppercase;width:96px;">Target</span>
           <span class="chip info">Final Answer Artifact</span><span class="chip info">State Change</span><span class="chip info">User-Facing Message</span><span class="chip">Trajectory</span>
         </div>
-        <div style="font-size:16px;color:#8fa3c7;margin-top:10px;">Tool Use, Agent Behavior and every Trajectory target count as process. Rate each criterion Present or Not Present on Model A.</div>
+        <div style="font-size:16px;color:#8fa3c7;margin-top:10px;">Tool Use, Agent Behavior and every Trajectory target count as process. Rate each criterion Present or Not Present on what Model A actually delivered, never on a preselected rating.</div>
       </div>
     </div>
   </div>
@@ -1197,7 +1201,7 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
 <div class="slide-fit"><div class="slide full" id="slide-11">
   <div class="corner-tl"></div>
   <div class="corner-br"></div>
-  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>5.1.1 Spot Checks &middot; 5.1.2 OR Logic &middot; 5.2 Weights &middot; 5.3 Distribution &middot; 5.5 Justifying &middot; 5.6 Severity</span></div>
+  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>5.1.1 Spot Checks &middot; 5.1.2 OR Logic &middot; 5.2 Weights &middot; 5.3 Distribution &middot; 5.5 Justifying &middot; 5.6 Severity &middot; 5.7 Checklist</span></div>
   <div class="slide-inner">
     <div class="content">
       <div class="section-num">Section 5</div>
@@ -1212,7 +1216,7 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
             <tr><td style="color:#6fe39a;">+3</td><td><strong style="color:#fff;">Exactly two</strong> axes</td><td style="color:#ff8a96;font-weight:700;">&minus;3</td><td>A plausible wrong default</td></tr>
             <tr><td style="color:#6fe39a;border-bottom:none;">+1</td><td style="border-bottom:none;">Zero or one: mechanical. Format checks stay here</td><td style="color:#ff8a96;font-weight:700;border-bottom:none;">&minus;1</td><td style="border-bottom:none;">Rare, out of character</td></tr>
           </table>
-          <div style="font-size:17px;color:#8fa3c7;margin-top:10px;">Only &minus;5 &minus;3 &minus;1 +1 +3 +5 are valid.</div>
+          <div style="font-size:17px;color:#8fa3c7;margin-top:10px;">Only &minus;5 &minus;3 &minus;1 +1 +3 +5 are valid. Any other weight fails the task automatically.</div>
         </div>
         <div class="mini-block">
           <h3>The four difficulty axes</h3>
@@ -1229,11 +1233,11 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
         </div>
       </div>
       <div class="cards c3" style="margin-top:26px;">
-        <div class="card"><h3>Cover everything</h3><div class="body">No fixed count, often 15 to 30. Every ask in the prompt gets a criterion. Negatives around 25%, below 30%, each one a failure the setup invites.</div></div>
+        <div class="card"><h3>Cover everything</h3><div class="body">No fixed count, often 15 to 30. Every ask in the prompt, the input files' instructions and the Verification condition gets a criterion, and a likely mistake fails only one. Negatives around 25%, below 30%, each one a failure the setup invites.</div></div>
         <div class="card"><h3>Spot check repeats</h3><div class="body">More than 8 similar outcomes: <strong>one completeness criterion plus up to five spot checks</strong> on the strongest cases. OR only between equally valid outcomes, never to hedge.</div></div>
         <div class="card"><h3>Justify every failure</h3><div class="body"><div><strong>1 &middot;</strong> Why the rubric is correct, quoting the prompt</div><div><strong>2 &middot;</strong> Where Model A failed: the exact call or output</div><div><strong>3 &middot;</strong> Why it is necessary</div><div style="color:#8fa3c7;margin-top:6px;">The golden needs none.</div></div></div>
       </div>
-      <div class="warn-box" style="margin-top:26px;">Issues are counted against the size of your block: <strong>major above 10%, moderate above 15%, minor above 20%</strong> fails the task. In practice, 2 to 4 issues are enough for a rejection.</div>
+      <div class="warn-box" style="margin-top:26px;">Issues are counted against the size of your block, cumulatively: <strong>major above 10%, major plus moderate above 15%, all issues above 20%</strong> fails the task. In practice, 2 to 4 issues are enough for a rejection.</div>
     </div>
   </div>
   <div class="footer-meta">Section 5 &middot; Objective Rubrics</div>
@@ -1242,17 +1246,17 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
 <div class="slide-fit"><div class="slide full" id="slide-12">
   <div class="corner-tl"></div>
   <div class="corner-br"></div>
-  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>6 Golden Solution, Leg B &middot; 6.1 What Changes &middot; 6.2 Steering &amp; Hinting</span></div>
+  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>6 Golden Solution, Leg B &middot; 6.1 What Changes &middot; 6.2 Steering &amp; Hinting &middot; 6.3 Before You Wrap</span></div>
   <div class="slide-inner">
     <div class="content">
       <div class="section-num">Section 6</div>
       <h1>Leg B &middot; The Golden</h1>
-      <div class="tagline">Same prompt, word for word, on a different model. Hint until the response is ideal.</div>
+      <div class="tagline">Same prompt, word for word, in a new conversation. Hint until the response is ideal.</div>
       <div class="two-col" style="margin-top:22px;align-items:start;gap:40px;">
         <div class="mini-block">
           <h3>What changes</h3>
           <ul>
-            <li style="font-size:20px;margin-bottom:9px;">A <strong>different model</strong>: GPT in Leg A, Opus here</li>
+            <li style="font-size:20px;margin-bottom:9px;"><strong>Both legs run on Opus,</strong> but this is a new conversation you can steer</li>
             <li style="font-size:20px;margin-bottom:9px;"><strong>Hinting is the method,</strong> not an optional step</li>
             <li style="font-size:20px;margin-bottom:0;"><strong>No turn cap.</strong> Nudges and a cleanup turn are fine at intent level</li>
           </ul>
@@ -1275,11 +1279,11 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
       <div class="two-col" style="margin-top:24px;align-items:stretch;gap:24px;">
         <div class="dark-card" style="border-color:rgba(46,204,113,0.5);padding:16px 20px;">
           <div style="font-size:14px;font-weight:800;letter-spacing:0.12em;color:#6fe39a;text-transform:uppercase;margin-bottom:8px;">&#10003; The golden is</div>
-          <div style="font-size:20px;color:#c8d6ec;line-height:1.5;">The same deliverable in its best form &middot; every file named exactly as requested &middot; grounded in the actual inputs &middot; artifacts only</div>
+          <div style="font-size:20px;color:#c8d6ec;line-height:1.5;">The same deliverable in its best form &middot; every file named exactly as requested &middot; grounded in the actual inputs &middot; passes every valid objective criterion &middot; artifacts only, a one pass answer to the prompt</div>
         </div>
         <div class="dark-card" style="border-color:rgba(255,138,150,0.5);padding:16px 20px;">
           <div style="font-size:14px;font-weight:800;letter-spacing:0.12em;color:#ff8a96;text-transform:uppercase;margin-bottom:8px;">&#10007; The golden is not</div>
-          <div style="font-size:20px;color:#c8d6ec;line-height:1.5;">A bigger deliverable &middot; a rewritten prompt &middot; a lucky run you could not steer to again</div>
+          <div style="font-size:20px;color:#c8d6ec;line-height:1.5;">A bigger deliverable &middot; a rewritten prompt &middot; a lucky run you could not steer to again &middot; a record of the steering: no apologies, earlier drafts or leftover figures</div>
         </div>
       </div>
       <div class="warn-box" style="margin-top:24px;">Still wrong on a feasible scenario? Keep hinting: <strong>switching approaches is an automatic rejection</strong>. A contrived or infeasible setup? Fix the task and restart from Leg A.</div>
@@ -1296,8 +1300,8 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
     <div class="content">
       <div class="section-num">Section 7</div>
       <h1>Subjective Rubrics</h1>
-      <div class="tagline">Presentation only, judged from the user's seat, written once the golden exists</div>
-      <div class="highlight-box" style="margin-top:18px;padding:16px 22px;">Anything you can settle <strong>against a source of truth</strong> stays objective. Anything you judge <strong>by looking at the render</strong> lives here.</div>
+      <div class="tagline">Presentation only, judged from the user's seat, written against the actual golden</div>
+      <div class="highlight-box" style="margin-top:18px;padding:16px 22px;">Anything you can settle <strong>against a source of truth</strong> stays objective. Anything you judge <strong>by looking at the render</strong> lives here. Two or more criteria that belong in the objective block, or that name no visible property, <strong>fail the task automatically</strong>.</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px;">
         <div class="dark-card"><div style="font-size:23px;font-weight:800;color:#2ecc71;">10 or more</div><div style="font-size:16px;color:#8fa3c7;margin-top:4px;line-height:1.4;">criteria expected, never padded to the count</div></div>
         <div class="dark-card"><div style="font-size:23px;font-weight:800;color:#2ecc71;">Task Completion</div><div style="font-size:16px;color:#8fa3c7;margin-top:4px;line-height:1.4;">the only category</div></div>
@@ -1321,7 +1325,7 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
           <div class="dark-card" style="border-top:3px solid #2ecc71;padding:10px 14px;"><div style="font-size:22px;font-weight:800;color:#6fe39a;">+5</div><div style="font-size:15px;color:#c8d6ec;margin-top:3px;line-height:1.35;">Unusable for its audience without it</div></div>
         </div>
       </div>
-      <div class="warn-box" style="margin-top:20px;">Rate <strong>Model A and the golden</strong>, criterion by criterion, and the golden's ratings are entirely yours. Justify every failure in three parts, at the level of the user's experience.</div>
+      <div class="warn-box" style="margin-top:20px;">Rate <strong>Model A and the golden</strong>, criterion by criterion, and the golden's ratings are entirely yours. <strong>If the golden misses several positives, the criteria describe a different render.</strong> Justify every failure in three parts, at the level of the user's experience.</div>
     </div>
   </div>
   <div class="footer-meta">Section 7 &middot; Subjective Rubrics</div>
