@@ -650,7 +650,301 @@
       }
       .slide-fit > .slide { transform: none !important; }
     }
-  </style></head><body><div class="deck-export"><button id="export-pdf" onclick="window.print()" title="Opens the print dialog. Choose Save as PDF - the page is already set to the slide size."><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 11.5 3.5 7l1.4-1.4L7 7.7V1h2v6.7l2.1-2.1L12.5 7 8 11.5zM2 13h12v2H2z"/></svg>Export to PDF</button><button id="export-pptx" title="Builds a 16:9 PowerPoint deck, one slide per slide."><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 11.5 3.5 7l1.4-1.4L7 7.7V1h2v6.7l2.1-2.1L12.5 7 8 11.5zM2 13h12v2H2z"/></svg>Export to PPTX</button></div>
+  </style><style>
+    /* Common Errors (slides 16 to 24). Real examples carry a solid blue
+       badge and recreated ones a dashed amber one, so the two never depend
+       on colour alone. */
+    .ce .ce-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .ce .ce-top .section-num { margin-bottom: 0; }
+    .ce h1 { margin-bottom: 10px; }
+    .ce .tagline { margin-top: 0; line-height: 1.4; }
+
+    .ce .st {
+      display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px;
+      font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+      white-space: nowrap; line-height: 1.3;
+    }
+    .ce .st.back { color: #ffb3bc; border: 1px solid rgba(255, 138, 150, 0.6); background: rgba(255, 138, 150, 0.08); }
+    .ce .st.new { color: #9fd0ff; border: 1px solid rgba(94, 179, 255, 0.6); background: rgba(94, 179, 255, 0.08); }
+    .ce .st.rule { color: #c8d6ec; border: 1px solid #4a5f8a; background: rgba(74, 95, 138, 0.14); }
+    .ce .st.rej { color: #fff; border: 1px solid #ff8a96; background: rgba(230, 57, 70, 0.3); letter-spacing: 0.08em; }
+
+    .ce .src {
+      display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 5px;
+      font-size: 12px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+      white-space: nowrap; line-height: 1.35; flex: none;
+    }
+    .ce .src.real { background: #5eb3ff; color: #06162e; border: 1.5px solid #5eb3ff; }
+    .ce .src.rec { color: #f7d98b; border: 1.5px dashed #f2c14e; background: rgba(242, 193, 78, 0.08); }
+    .ce .where { font-size: 15px; color: #8fa3c7; white-space: nowrap; }
+    .ce .tn { font-family: 'JetBrains Mono', monospace; font-size: 0.86em; color: #cfe0f5; }
+
+    /* The mistake and the fix, side by side */
+    .ce .ce-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 30px; align-items: stretch; }
+    .ce .ce-card {
+      background: rgba(8, 12, 24, 0.62); border: 1px solid #24365c; border-radius: 12px;
+      padding: 20px 26px 22px; display: flex; flex-direction: column;
+    }
+    .ce .ce-card.bad { border-top: 3px solid #ff8a96; }
+    .ce .ce-card.ok { border-top: 3px solid #2ecc71; }
+    .ce .ce-ch { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; min-height: 28px; }
+    .ce .ce-ch .lab { font-size: 16px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+    .ce .ce-card.bad .ce-ch .lab { color: #ff8a96; }
+    .ce .ce-card.ok .ce-ch .lab { color: #6fe39a; }
+    .ce .ce-ch .sp { flex: 1; }
+
+    .ce .ce-r { display: grid; grid-template-columns: 118px 1fr; gap: 14px; padding: 11px 0; border-top: 1px solid rgba(42, 58, 92, 0.55); }
+    .ce .ce-ch + .ce-r, .ce .ce-sub .ce-r:first-of-type { border-top: none; }
+    .ce .ce-r .k { font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #6f86b0; padding-top: 5px; line-height: 1.3; }
+    .ce .ce-r .v { font-size: 20px; line-height: 1.45; color: #d4dff0; min-width: 0; }
+    .ce .ce-r .v strong, .ce .ce-sub p strong { color: #fff; }
+    .ce .ce-r .v small { display: block; font-size: 16.5px; color: #8fa3c7; margin-top: 3px; line-height: 1.4; }
+
+    .ce .ce-sub { padding: 12px 0; border-top: 1px solid rgba(42, 58, 92, 0.55); }
+    .ce .ce-ch + .ce-sub { border-top: none; padding-top: 2px; }
+    .ce .ce-sub .h { display: flex; align-items: center; gap: 10px; font-size: 21px; font-weight: 800; color: #fff; margin-bottom: 7px; line-height: 1.3; }
+    .ce .ce-sub p { font-size: 19.5px; line-height: 1.45; color: #c8d6ec; }
+
+    .ce .q { color: #eef3fb; }
+    .ce .q::before { content: '\201C'; color: #6f86b0; }
+    .ce .q::after { content: '\201D'; color: #6f86b0; }
+    .ce .code { font-family: 'JetBrains Mono', monospace; font-size: 0.86em; color: #cfe0f5; }
+    .ce .mk-bad { background: rgba(255, 138, 150, 0.17); border-bottom: 2px solid #ff8a96; color: #fff; padding: 0 3px; border-radius: 2px; }
+    .ce .mk-ok { background: rgba(46, 204, 113, 0.16); border-bottom: 2px solid #2ecc71; color: #fff; padding: 0 3px; border-radius: 2px; }
+    .ce .mk-on { background: rgba(242, 193, 78, 0.18); border-bottom: 2px solid #f2c14e; color: #fff; padding: 0 3px; border-radius: 2px; }
+
+    .ce ul.ce-li { margin: 4px 0 0; }
+    .ce ul.ce-li li { font-size: 19.5px; line-height: 1.4; margin-bottom: 5px; padding-left: 28px; color: #d4dff0; }
+    .ce ul.ce-li li strong { color: #fff; }
+    .ce ul.ce-li.x li::before { content: '\2715'; color: #ff8a96; font-size: 16px; top: 3px; }
+    .ce ul.ce-li.c li::before { content: '\2713'; color: #6fe39a; font-size: 18px; font-weight: 800; top: 0; }
+
+    .ce .ce-why, .ce .ce-note { margin-top: auto; padding-top: 14px; font-size: 19px; line-height: 1.45; }
+    .ce .ce-why { color: #ffd0d5; }
+    .ce .ce-note { color: #d5f3e2; }
+    .ce .ce-why b, .ce .ce-note b {
+      font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; margin-right: 8px;
+    }
+    .ce .ce-why b { color: #ff8a96; }
+    .ce .ce-note b { color: #6fe39a; }
+    .ce .ce-note strong, .ce .ce-why strong { color: #fff; }
+
+    /* Small timeline of dates */
+    .ce .tl { display: flex; align-items: stretch; gap: 0; margin: 8px 0 4px; }
+    .ce .tl .d {
+      flex: 1; border: 1px solid #24365c; border-radius: 8px; padding: 8px 12px; background: rgba(13, 21, 48, 0.6);
+      font-size: 16.5px; line-height: 1.3; color: #c8d6ec; min-width: 0;
+    }
+    .ce .tl .d b { display: block; font-size: 12.5px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #8fa3c7; margin-bottom: 2px; }
+    .ce .tl .d.ok { border-color: rgba(111, 227, 154, 0.6); }
+    .ce .tl .d.ok b { color: #6fe39a; }
+    .ce .tl .d.bad { border-color: rgba(255, 138, 150, 0.6); }
+    .ce .tl .d.bad b { color: #ff8a96; }
+    .ce .tl .a { flex: 0 0 26px; display: flex; align-items: center; justify-content: center; color: #4a6fa8; font-size: 18px; }
+
+    /* Find box */
+    .ce .find { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ce .find span {
+      display: inline-flex; align-items: center; gap: 9px; border: 1px solid #2a3a5c; border-radius: 6px;
+      padding: 5px 11px; background: rgba(13, 21, 48, 0.7); font-family: 'JetBrains Mono', monospace; font-size: 16px; color: #cfe0f5;
+    }
+    .ce .find span i { font-style: normal; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; color: #6fe39a; }
+    .ce .codes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+    .ce .codes span {
+      font-family: 'JetBrains Mono', monospace; font-size: 15.5px; color: #ffd0d5; border: 1px solid rgba(255, 138, 150, 0.45);
+      background: rgba(255, 138, 150, 0.07); border-radius: 5px; padding: 2px 8px;
+    }
+
+    /* The 30 daily highs */
+    .ce .dots { display: flex; gap: 5px; margin: 6px 0 4px; }
+    .ce .dots i { flex: 1; height: 23px; border-radius: 4px; display: block; }
+    .ce .dots i.lo { background: rgba(94, 179, 255, 0.55); }
+    .ce .dots i.on { background: #f2c14e; box-shadow: 0 0 0 2px #fff; }
+    .ce .dots i.hi { background: rgba(255, 138, 150, 0.6); }
+    .ce .dotkey { display: flex; gap: 18px; font-size: 16px; color: #8fa3c7; }
+    .ce .dotkey span { display: inline-flex; align-items: center; gap: 6px; }
+    .ce .dotkey i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+    .ce .pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ce .pills span { border-radius: 6px; padding: 4px 11px; font-size: 17px; border: 1px solid #4a5f8a; color: #c8d6ec; }
+    .ce .pills span.ok { border-color: rgba(111, 227, 154, 0.6); color: #8ef0b4; background: rgba(46, 204, 113, 0.08); }
+    .ce .pills span.bad { border-color: rgba(255, 138, 150, 0.6); color: #ff8a96; background: rgba(255, 138, 150, 0.07); }
+
+    /* The check and the cases, along the bottom */
+    .ce .ce-bar { display: grid; grid-template-columns: 1fr auto; gap: 24px; margin-top: 30px; align-items: stretch; }
+    .ce .ce-check { background: rgba(46, 204, 113, 0.08); border-left: 4px solid #2ecc71; border-radius: 0 8px 8px 0; padding: 14px 22px 15px; }
+    .ce .ce-check .h, .ce .ce-exs .h { font-size: 13px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 4px; }
+    .ce .ce-check .h { color: #6fe39a; }
+    .ce .ce-check .t { font-size: 21px; line-height: 1.45; color: #e3f6ea; }
+    .ce .ce-exs { display: flex; flex-direction: column; justify-content: center; }
+    .ce .ce-exs .h { color: #7eb8ff; margin-bottom: 8px; }
+    .ce .ce-exs .row { display: flex; gap: 10px; }
+
+    /* A case: a <details> whose summary is the button on the slide. Open, the
+       summary moves to the top right of the viewer and reads Back to slide. */
+    .ce details.ce-ex { display: block; }
+    .ce details.ce-ex > summary {
+      list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 10px;
+      padding: 10px 16px 10px 10px; border-radius: 8px; font-size: 17px; font-weight: 700; color: #e8edf7;
+      background: rgba(94, 179, 255, 0.08); border: 1.5px solid rgba(94, 179, 255, 0.75); white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+    .ce details.ce-ex.rec > summary { border-style: dashed; border-color: #f2c14e; background: rgba(242, 193, 78, 0.07); }
+    .ce details.ce-ex > summary::-webkit-details-marker { display: none; }
+    .ce details.ce-ex > summary::marker { content: ''; }
+    .ce details.ce-ex > summary:hover { background: rgba(94, 179, 255, 0.2); }
+    .ce details.ce-ex.rec > summary:hover { background: rgba(242, 193, 78, 0.18); }
+    .ce details.ce-ex > summary:focus-visible { outline: 3px solid #7eb8ff; outline-offset: 3px; }
+    .ce summary .n {
+      display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; padding: 0 6px;
+      border-radius: 6px; background: #5eb3ff; color: #06162e; font-size: 16px; font-weight: 800;
+    }
+    .ce details.rec > summary .n { background: #f2c14e; color: #2a1d00; }
+    .ce summary .tk { font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #9fd0ff; }
+    .ce details.rec > summary .tk { color: #f7d98b; }
+    .ce summary .ar { color: #7eb8ff; font-size: 15px; }
+    .ce summary .open-only { display: none; }
+    .ce details[open] > summary .shut-only, .ce details[open] > summary .n { display: none; }
+    .ce details[open] > summary .open-only { display: inline; }
+    .ce details.ce-ex[open] > summary {
+      position: absolute; top: 140px; right: 112px; z-index: 9; padding: 10px 18px;
+      background: #16224a; border: 1.5px solid #5eb3ff; border-style: solid;
+    }
+
+    .ce .ce-view {
+      position: absolute; left: 100px; right: 80px; top: 118px; bottom: 82px; z-index: 8;
+      background: linear-gradient(160deg, #111b3b 0%, #0b1124 100%); border: 1px solid #2f4470; border-radius: 14px;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.7); padding: 22px 34px 18px; display: flex; flex-direction: column;
+      cursor: auto; text-align: left;
+    }
+    .ce .vh { display: flex; align-items: center; gap: 12px; padding-right: 250px; min-height: 44px; }
+    .ce .vh .vt { font-size: 22px; font-weight: 800; color: #fff; }
+    .ce .vh .vd { font-size: 16px; color: #8fa3c7; }
+    .ce .vtitle { font-size: 34px; font-weight: 800; color: #fff; margin: 12px 0 18px; line-height: 1.2; }
+    .ce .vgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 42px; flex: 1; min-height: 0; }
+    .ce .vcol { display: flex; flex-direction: column; gap: 11px; min-width: 0; }
+    .ce .vk { font-size: 13.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #7eb8ff; margin-top: 4px; }
+    .ce .vk.bad { color: #ff8a96; }
+    .ce .vk.ok { color: #6fe39a; }
+    .ce .vq {
+      border-left: 3px solid #5eb3ff; background: rgba(94, 179, 255, 0.07); padding: 11px 16px; border-radius: 0 8px 8px 0;
+      font-size: 19px; line-height: 1.5; color: #e3ecf8;
+    }
+    .ce .vq .who { display: block; font-size: 12.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #7eb8ff; margin-bottom: 3px; }
+    .ce .vq.rec { border-left-color: #f2c14e; background: rgba(242, 193, 78, 0.06); }
+    .ce .vq.rec .who { color: #f7d98b; }
+    .ce .vnote { font-size: 16.5px; color: #8fa3c7; line-height: 1.45; }
+    .ce .vrow {
+      display: grid; grid-template-columns: 118px 1fr; gap: 14px; font-size: 18.5px; line-height: 1.45; color: #d4dff0;
+      padding: 8px 0; border-top: 1px solid rgba(42, 58, 92, 0.55);
+    }
+    .ce .vrow .k { font-size: 12.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #6f86b0; padding-top: 4px; line-height: 1.3; }
+    .ce .vrow strong { color: #fff; }
+    .ce ol.vsteps { list-style: none; counter-reset: s; margin: 0; }
+    .ce ol.vsteps li { counter-increment: s; position: relative; padding-left: 38px; font-size: 18.5px; line-height: 1.45; color: #d4dff0; margin-bottom: 10px; }
+    .ce ol.vsteps li::before {
+      content: counter(s); position: absolute; left: 0; top: 1px; width: 26px; height: 26px; border-radius: 50%;
+      background: #2ecc71; color: #06210f; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+    }
+    .ce ol.vsteps li strong { color: #fff; }
+    .ce .vfoot { margin-top: 10px; padding-top: 11px; border-top: 1px solid #24365c; font-size: 16px; color: #8fa3c7; display: flex; gap: 10px; align-items: center; }
+    .ce .vfoot b { color: #5eb3ff; font-size: 13px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+
+    /* Slide 16: the index and how to read it */
+    .ce .ce-open { display: grid; grid-template-columns: 1fr 540px; gap: 34px; margin-top: 26px; }
+    .ce .ce-index { display: flex; flex-direction: column; gap: 10px; }
+    .ce a.ce-ix {
+      display: grid; grid-template-columns: 42px 1fr auto 104px; align-items: center; gap: 18px; padding: 13px 20px;
+      border: 1px solid #24365c; border-radius: 10px; background: rgba(8, 12, 24, 0.62); text-decoration: none; color: inherit;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .ce a.ce-ix:hover { border-color: #2ecc71; background: rgba(46, 204, 113, 0.07); }
+    .ce a.ce-ix:focus-visible, .ce a.go:focus-visible, .ce a.ce-hub:focus-visible { outline: 3px solid #7eb8ff; outline-offset: 2px; }
+    .ce .ce-ix .n {
+      width: 40px; height: 40px; border-radius: 50%; background: #2ecc71; color: #06210f; font-weight: 800; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ce .ce-ix.last .n { background: transparent; border: 2px solid #2ecc71; color: #2ecc71; }
+    .ce .ce-ix .t b { display: block; font-size: 22px; color: #fff; font-weight: 800; line-height: 1.25; }
+    .ce .ce-ix .t small { display: block; font-size: 17px; color: #8fa3c7; line-height: 1.35; margin-top: 2px; }
+    .ce .go { font-size: 14px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #2ecc71; text-align: right; white-space: nowrap; text-decoration: none; }
+    .ce .ce-legend { background: rgba(8, 12, 24, 0.62); border: 1px solid #24365c; border-top: 3px solid #5eb3ff; border-radius: 12px; padding: 22px 26px; display: flex; flex-direction: column; gap: 18px; }
+    .ce .ce-legend h3 { font-size: 16px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #5eb3ff; }
+    .ce .ce-legend .lg { display: flex; flex-direction: column; gap: 7px; align-items: flex-start; }
+    .ce .ce-legend .lg p { font-size: 18.5px; line-height: 1.45; color: #c8d6ec; }
+    .ce .ce-legend .lg p strong { color: #fff; }
+    .ce .ce-legend .lg .sts { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ce .demo { display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 10px; border-radius: 8px; font-size: 17px; font-weight: 700; color: #e8edf7; background: rgba(94, 179, 255, 0.08); border: 1.5px solid rgba(94, 179, 255, 0.75); }
+    .ce .demo .n { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; border-radius: 6px; background: #5eb3ff; color: #06162e; font-size: 15px; font-weight: 800; }
+    .ce a.ce-hub {
+      margin-top: auto; display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; text-decoration: none;
+      font-size: 16px; font-weight: 700; color: #8ef0b4; border: 1.5px solid rgba(46, 204, 113, 0.7); border-radius: 8px; padding: 8px 14px;
+      background: rgba(46, 204, 113, 0.07);
+    }
+    .ce a.ce-hub:hover { background: rgba(46, 204, 113, 0.18); }
+
+    /* Slide 24: the checklist. The ticks are real checkboxes and the count is a
+       CSS counter, so it works with no script; nothing is saved. */
+    .ce .ce-list { display: flex; flex-direction: column; gap: 12px; margin-top: 30px; counter-reset: done; }
+    .ce .ce-item {
+      display: grid; grid-template-columns: 1fr 136px 104px; align-items: center; gap: 20px; padding: 16px 22px;
+      border: 1px solid #24365c; border-radius: 10px; background: rgba(8, 12, 24, 0.62);
+    }
+    .ce .ce-item label { display: grid; grid-template-columns: 34px 1fr; align-items: center; gap: 18px; cursor: pointer; }
+    .ce .ce-item input {
+      -webkit-appearance: none; appearance: none; width: 32px; height: 32px; margin: 0; border: 2px solid #4a6fa8; border-radius: 7px;
+      background: rgba(13, 21, 48, 0.6); display: grid; place-content: center; cursor: pointer;
+    }
+    .ce .ce-item input::before {
+      content: ''; width: 15px; height: 8px; border-left: 3.5px solid #06210f; border-bottom: 3.5px solid #06210f;
+      transform: translate(0, -2px) rotate(-45deg); opacity: 0;
+    }
+    .ce .ce-item input:checked { background: #2ecc71; border-color: #2ecc71; counter-increment: done; }
+    .ce .ce-item input:checked::before { opacity: 1; }
+    .ce .ce-item input:focus-visible { outline: 3px solid #7eb8ff; outline-offset: 2px; }
+    .ce .ce-item .t { font-size: 21.5px; line-height: 1.4; color: #d4dff0; }
+    .ce .ce-item .t b { color: #fff; }
+    .ce .ce-item input:checked + .t { color: #8fa3c7; }
+    .ce .ce-item input:checked + .t b { color: #8ef0b4; }
+    .ce .ce-item .step { justify-self: start; font-size: 13px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #9fd0ff; border: 1px solid rgba(94, 179, 255, 0.5); border-radius: 999px; padding: 3px 11px; white-space: nowrap; }
+    .ce .ce-done { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-top: 22px; }
+    .ce .ce-count { font-size: 16px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #6fe39a; white-space: nowrap; }
+    .ce .ce-count::after { content: counter(done) ' of 7 checked'; }
+    .ce .ce-done p { font-size: 18.5px; color: #8fa3c7; line-height: 1.45; }
+
+    @media print {
+      .ce details.ce-ex > .ce-view { display: none !important; }
+      .ce details.ce-ex[open] > summary { position: static; }
+    }
+  </style>
+<script>
+  /* Common Errors cases: Esc closes an open case, one case is open at a time,
+     and every case closes before printing or the PPTX export. */
+  (function () {
+    function shut(except) {
+      var open = document.querySelectorAll('details.ce-ex[open]');
+      for (var i = 0; i < open.length; i++) { if (open[i] !== except) { open[i].open = false; } }
+      return open.length;
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') { return; }
+      var d = document.querySelector('details.ce-ex[open]');
+      if (!d) { return; }
+      d.open = false;
+      var s = d.querySelector('summary');
+      if (s) { s.focus(); }
+      e.preventDefault();
+    });
+    document.addEventListener('toggle', function (e) {
+      var d = e.target;
+      if (d && d.classList && d.classList.contains('ce-ex') && d.open) { shut(d); }
+    }, true);
+    window.addEventListener('beforeprint', function () { shut(null); });
+    document.addEventListener('click', function (e) {
+      if (e.target && e.target.closest && e.target.closest('#export-pptx')) { shut(null); }
+    }, true);
+  })();
+</script></head><body><div class="deck-export"><button id="export-pdf" onclick="window.print()" title="Opens the print dialog. Choose Save as PDF - the page is already set to the slide size."><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 11.5 3.5 7l1.4-1.4L7 7.7V1h2v6.7l2.1-2.1L12.5 7 8 11.5zM2 13h12v2H2z"/></svg>Export to PDF</button><button id="export-pptx" title="Builds a 16:9 PowerPoint deck, one slide per slide."><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 11.5 3.5 7l1.4-1.4L7 7.7V1h2v6.7l2.1-2.1L12.5 7 8 11.5zM2 13h12v2H2z"/></svg>Export to PPTX</button></div>
 <div class="slide-fit"><div class="slide cover" id="slide-0">
   <div class="corner-tl"></div>
   <div class="corner-br"></div>
@@ -1433,6 +1727,322 @@ Slack <span class="g">&rarr; one DM to Carlton</span>   <span class="c">with the
   </div>
   <div class="footer-meta">Intro Course</div>
   <div class="footer-brand">OpenClaw MM &middot; Single Turn</div>
+</div></div>
+<div class="slide-fit"><div class="slide full ce" id="slide-16">
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>Hard Client Requirements &middot; Complexity Bar &middot; 5.5 Severity &middot; 5.6 Final Rubric Checklist</span></div>
+  <div class="slide-inner">
+    <div class="content">
+      <div class="ce-top"><div class="section-num">After the intro</div></div>
+      <h1>Common Errors</h1>
+      <div class="tagline">What the client flagged in delivered tasks: the real mistake, why it fails, and what doing it right looks like</div>
+      <div class="ce-open">
+        <div class="ce-index">
+          <a class="ce-ix" href="#slide-17"><span class="n">1</span><span class="t"><b>Complexity comes from the scenario</b><small>A simple task made to fail by a stretched rubric: 44 tasks rejected, 30% of a delivery</small></span><span class="st new">New</span><span class="go">Slide 17 &rarr;</span></a>
+          <a class="ce-ix" href="#slide-18"><span class="n">2</span><span class="t"><b>The golden passes its own rubric</b><small>A golden that contradicts a criterion it was meant to pass</small></span><span class="st back">Came back</span><span class="go">Slide 18 &rarr;</span></a>
+          <a class="ce-ix" href="#slide-19"><span class="n">3</span><span class="t"><b>No link code in the prompt or criteria</b><small>File and site names pasted in as markdown links</small></span><span class="st back">Came back</span><span class="go">Slide 19 &rarr;</span></a>
+          <a class="ce-ix" href="#slide-20"><span class="n">4</span><span class="t"><b>State today's date, grade fixed dates</b><small>Tonight, today or in time, with no date in the prompt</small></span><span class="st new">New</span><span class="go">Slide 20 &rarr;</span></a>
+          <a class="ce-ix" href="#slide-21"><span class="n">5</span><span class="t"><b>Dates on a live server need a month</b><small>A Duffel date or offer gone by the time the client reviews</small></span><span class="st new">New</span><span class="go">Slide 21 &rarr;</span></a>
+          <a class="ce-ix" href="#slide-22"><span class="n">6</span><span class="t"><b>A correct answer never fails a criterion</b><small>A value exactly on the threshold, counted one way only</small></span><span class="st new">New</span><span class="go">Slide 22 &rarr;</span></a>
+          <a class="ce-ix" href="#slide-23"><span class="n">7</span><span class="t"><b>Grade the live value as retrieved</b><small>A price or rate frozen at the figure of the day you wrote it</small></span><span class="st rule">Existing rule</span><span class="go">Slide 23 &rarr;</span></a>
+        </div>
+        <div class="ce-legend">
+          <h3>How to read it</h3>
+          <div class="lg"><span class="src real">Real client example</span><p>A task the client flagged, <strong>quoted from its report as delivered</strong>. Tasks are named, contributors never are</p></div>
+          <div class="lg"><span class="src rec">Recreated scenario</span><p>Built to show the same mistake where a real case would take too long to read</p></div>
+          <div class="lg"><span class="demo"><span class="n">3</span>windy-city-return-freight <span style="color:#7eb8ff;">&#8599;</span></span><p><strong>Open any case on its slide</strong>: the client's words, where it shows and what it should have been. <strong>Back to slide</strong> or Esc closes it</p></div>
+          <div class="lg"><div class="sts"><span class="st back">Came back</span><span class="st new">New</span><span class="st rule">Existing rule</span></div><p>Flagged again after an earlier report, first seen in these deliveries, or a Guidelines rule the client reinforced</p></div>
+          <a class="ce-hub" href="https://pablitofott14.github.io/golden-task-hub/#/alignments" target="_blank" rel="noopener">Golden Task Hub &middot; Urgent Alignments &#8599;</a>
+        </div>
+      </div>
+      <a class="ce-ix last" href="#slide-24" style="margin-top:9px;margin-right:574px;"><span class="n">&#10003;</span><span class="t"><b>Seven checks before you submit</b></span><span></span><span class="go">Slide 24 &rarr;</span></a>
+    </div>
+  </div>
+  <div class="footer-meta">Common Errors &middot; Client Flags</div>
+  <div class="footer-brand">What The Client Flagged</div>
+</div></div>
+<div class="slide-fit"><div class="slide full ce" id="slide-17">
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>Complexity Bar &middot; 4.2 Valid vs Invalid Failures &middot; 7.1 Grading All 8 Runs</span></div>
+  <div class="slide-inner">
+    <div class="content">
+      <div class="ce-top"><div class="section-num">Common Errors &middot; 1 of 7</div><span class="st new">New</span><span class="st rej">44 tasks rejected &middot; 30% of a delivery</span></div>
+      <h1>Complexity Comes From The Scenario</h1>
+      <div class="tagline">A stretched rubric on a simple task is not complexity: the model failed the rubric, not the task, and the client does not count it</div>
+      <div class="ce-cols">
+        <div class="ce-card bad">
+          <div class="ce-ch"><span class="lab">&#10005; The mistake &middot; a hard rubric</span></div>
+          <div class="ce-sub">
+            <div class="h"><span class="src rec">Recreated</span>Criteria for things nobody asked for</div>
+            <p>The prompt: <span class="q">find the dentist appointment in this week's emails and put it on my calendar</span>. The run gets it right, so criteria are added that grade</p>
+            <ul class="ce-li x"><li>the event title in one exact wording</li><li>a reminder exactly 30 minutes before</li><li>the clinic's phone number in the notes</li></ul>
+          </div>
+          <div class="ce-sub">
+            <div class="h"><span class="src real">Real</span>Passed criteria cut to lower the score <span class="where">biscuit-food-shipment</span></div>
+            <p>The client's runs averaged <strong>0.88</strong> on Opus and <strong>0.84</strong> on Muse. A rework then cut 12 criteria the run passed, 63 points down to 39: its score fell to about 0.62, in range <span class="mk-bad">only because of the cuts</span>. Covered honestly, it scores about 0.75.</p>
+          </div>
+          <div class="ce-why"><b>Why it fails</b>Neither is a valid failure. A stretched criterion is a rubric issue of its own (Incorrect Criteria, Overfitting), and every cut is Missing Criteria.</div>
+        </div>
+        <div class="ce-card ok">
+          <div class="ce-ch"><span class="lab">&#10003; Done right &middot; a hard scenario</span></div>
+          <div class="ce-sub">
+            <div class="h">Hard because of what the agent has to find, read and reconcile</div>
+            <ul class="ce-li c"><li>a later email that corrects an earlier one</li><li>a rule kept in a document, not in the prompt</li><li>a detail that only shows in a photo</li></ul>
+          </div>
+          <div class="ce-sub">
+            <div class="h"><span class="src real">Real</span>What genuinely beat the runs, and stays</div>
+            <ul class="ce-li c"><li>the card charge at 2:20 AM, before the 2:31 AM packing email</li><li>$47.26 actually charged, not the $43.52 on the screen</li><li>treats that only the Costco receipt PDF shows</li></ul>
+          </div>
+          <div class="ce-note">Write criteria for every requirement, the ones runs get right included. Honest average still above 0.7? <strong>Make the scenario harder, never the rubric.</strong></div>
+        </div>
+      </div>
+      <div class="ce-bar"><div class="ce-check"><div class="h">Before you submit</div><div class="t">Every criterion grades something the request requires, and the scenario alone keeps the average of the 8 runs at 0.7 or below.</div></div><div class="ce-exs"><div class="h">Open the cases</div><div class="row"><details class="ce-ex rec"><summary aria-label="Example 1, recreated scenario: A dentist appointment"><span class="n">1</span><span class="shut-only"><span class="tk">Recreated</span> A dentist appointment <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 1"><div class="vh"><span class="src rec">Recreated scenario</span><span class="vt">Example 1 &middot; A dentist appointment</span><span class="vd">Recreated from the client's description of the rejected tasks</span></div><div class="vtitle">A simple lookup, made to fail by its rubric</div><div class="vgrid"><div class="vcol"><div class="vq rec"><span class="who">The scenario</span>The user asks: find the dentist appointment in this week's emails and put it on my calendar. The run finds it and adds it on the right day, at the right time.</div><div class="vk bad">Where it shows</div><div class="vrow"><span class="k">Criterion</span><div>The event is titled exactly <span class="mk-bad">Dentist appointment: Dr. Ruiz</span><br><small style="color:#8fa3c7;">One wording where any clear title is right: Overfitting</small></div></div><div class="vrow"><span class="k">Criterion</span><div>A reminder is set <span class="mk-bad">exactly 30 minutes before</span><br><small style="color:#8fa3c7;">The prompt never asks for a reminder: Incorrect Criteria</small></div></div><div class="vrow"><span class="k">Criterion</span><div>The event notes hold <span class="mk-bad">the clinic's phone number</span><br><small style="color:#8fa3c7;">Never asked for either</small></div></div><div class="vrow"><span class="k">Left out</span><div>The day and the time the run got right<br><small style="color:#8fa3c7;">Cut so its misses weigh more: Missing Criteria</small></div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><div class="vrow"><span class="k">Scenario</span><div>The same need, made hard to get right: the clinic's second email <strong>moves the visit to Friday</strong>, the new time <strong>only shows on a photo of the reminder card</strong>, and Friday at 9:00 AM <strong>clashes with a standing team call</strong> on the calendar</div></div><div class="vrow"><span class="k">Prompt</span><div>Put my dentist appointment on the calendar, and tell me if it clashes with anything</div></div><div class="vrow"><span class="k">Criteria</span><div>Only what the request needs, built from the golden and the GTFA: the visit on the moved day and time, read off the card; the clash with the 9:00 AM call flagged</div></div><div class="vk">Then</div><ol class="vsteps"><li>Grade all 8 runs on criteria like these, as they are</li><li>Honest average still above 0.7? <strong>Make the scenario harder, never the rubric</strong></li></ol></div></div><div class="vfoot"><b>Guidelines</b><span>Complexity Bar &middot; 4.2 Valid vs Invalid Failures &middot; 5.5 Severity &middot; 7.1 Grading All 8 Runs</span></div></div></details><details class="ce-ex real"><summary aria-label="Example 2, real client example: biscuit-food-shipment"><span class="n">2</span><span class="shut-only"><span class="tk">Real</span> biscuit-food-shipment <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 2"><div class="vh"><span class="src real">Real client example</span><span class="vt">Example 2 &middot; biscuit-food-shipment</span><span class="vd">Client report &middot; Oct 21 delivery &middot; flag 01</span></div><div class="vtitle">Too easy for the client's runs, then brought into range by cutting criteria</div><div class="vgrid"><div class="vcol"><div class="vq"><span class="who">The client</span>Both models score above 0.7 on 16 tasks, and Claude scores above 0.7 on 53 of the 70 (average 0.77). [&hellip;] biscuit-food-shipment (&hellip;): Claude 0.88, Muse 0.84. [&hellip;] Each average is over 4 runs per model.</div><div class="vrow"><span class="k">The task</span><div>Ray asks whether to push his dog's Chewy Autoship order, and by when in Phoenix time, going by what the app says</div></div><div class="vk bad">What happened next</div><div class="vrow"><span class="k">Rework</span><div><span class="mk-bad">Twelve criteria the new run met were cut</span>: the positive weight went from 63 to 39 points</div></div><div class="vrow"><span class="k">Score</span><div>The run lost 15 of 39 points, a score of about 0.62: <strong>inside the range only because of the cuts</strong></div></div><div class="vrow"><span class="k">Honestly</span><div>With every requirement covered and weighted by difficulty, the same run loses 15 of 61: about 0.75, <strong>still too easy</strong></div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><ol class="vsteps"><li><strong>Cover every requirement</strong> and weight each by how hard it is to get right, never by the run's result</li><li><strong>Keep the steps that genuinely beat the runs:</strong> the card charge that posts at 2:20 AM, before the 2:31 AM packing email; the $47.26 actually charged against the $43.52 on the screen; the treats only the Costco receipt PDF shows</li><li><strong>Plan one more decision of that kind</strong> from records the task already uses: his reminder comes back as <span class="code">2026-11-04T02:30:00Z</span>, which is Tuesday, Nov 3 at 7:30 PM in Phoenix. Read in UTC, it lands on the ship date</li><li>A prompt change means <strong>a new golden and 8 new runs</strong>. Still above 0.7? Keep raising genuine complexity</li></ol><div class="vnote">The client flagged the task's scores. What happened next comes from the project's own review of the rework.</div></div></div><div class="vfoot"><b>Guidelines</b><span>Complexity Bar: stretched rubric set, incomplete positive coverage, rubric tuned to the score &middot; 7.1 Grading All 8 Runs</span></div></div></details></div></div></div>
+    </div>
+  </div>
+  <div class="footer-meta">Common Errors &middot; Client Flags</div>
+  <div class="footer-brand">Genuine Complexity</div>
+</div></div>
+<div class="slide-fit"><div class="slide full ce" id="slide-18">
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>3.5 Before You Wrap the Golden Up &middot; 5.6 Final Rubric Checklist</span></div>
+  <div class="slide-inner">
+    <div class="content">
+      <div class="ce-top"><div class="section-num">Common Errors &middot; 2 of 7</div><span class="st back">Came back</span></div>
+      <h1>The Golden Passes Its Own Rubric</h1>
+      <div class="tagline">When the golden fails a criterion, one side is wrong, and the client cannot tell which one to trust</div>
+      <div class="ce-cols">
+        <div class="ce-card bad">
+          <div class="ce-ch"><span class="lab">&#10005; The mistake</span><span class="sp"></span><span class="src real">Real client example</span><span class="where">Oct 26 &middot; windy-city-return-freight</span></div>
+          <div class="ce-r"><span class="k">Prompt</span><div class="v">Asks which option to pick for getting his unsold stock and empty cartons home</div></div>
+          <div class="ce-r"><span class="k">Criterion</span><div class="v"><span class="q">&hellip;ends with one recommended route&hellip;</span></div></div>
+          <div class="ce-r"><span class="k">Golden</span><div class="v"><span class="q"><span class="mk-bad">Don't pick an option now.</span> Pick it at 5 PM on Saturday&hellip;</span></div></div>
+          <div class="ce-r"><span class="k">Criterion</span><div class="v">Expects the Saturday evening hours of a counter near the hall</div></div>
+          <div class="ce-r"><span class="k">Golden</span><div class="v">Only a <span class="q">Counters open on a Sunday</span> table</div></div>
+          <div class="ce-why"><b>Why it fails</b>The criteria follow the prompt and the golden does not. A golden is meant to pass every criterion: when it contradicts one, the task fails either way.</div>
+        </div>
+        <div class="ce-card ok">
+          <div class="ce-ch"><span class="lab">&#10003; Done right &middot; fix the side that is wrong</span></div>
+          <div class="ce-sub">
+            <div class="h">The golden missed a valid requirement: keep steering</div>
+            <div class="ce-r"><span class="k">Hint</span><div class="v"><span class="q">I still need to know which one you'd pick before I leave</span><small>Until the page ends with one recommended route and gives the Saturday evening hours</small></div></div>
+          </div>
+          <div class="ce-sub">
+            <div class="h"><span class="src real">Real</span>The criterion misread the data: rewrite it <span class="where">certificate-savings-split</span></div>
+            <div class="ce-r"><span class="k">Golden</span><div class="v"><strong>$16,546</strong>, counting three $250 autosaves her note keeps on<small>The criterion accepted only the reading from today's balance, $15,796.17. Both follow from the data, so it now <span class="mk-ok">accepts both readings</span> and the golden stays</small></div></div>
+          </div>
+          <div class="ce-note">Rubrics are built from the golden: <strong>point to the line in it that passes each criterion.</strong> If you cannot, one side is wrong.</div>
+        </div>
+      </div>
+      <div class="ce-bar"><div class="ce-check"><div class="h">Before you submit</div><div class="t">You can point to where the golden satisfies each criterion.</div></div><div class="ce-exs"><div class="h">Open the cases</div><div class="row"><details class="ce-ex real"><summary aria-label="Example 3, real client example: windy-city-return-freight"><span class="n">3</span><span class="shut-only"><span class="tk">Real</span> windy-city-return-freight <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 3"><div class="vh"><span class="src real">Real client example</span><span class="vt">Example 3 &middot; windy-city-return-freight</span><span class="vd">Client report &middot; Oct 26 delivery &middot; flag 02</span></div><div class="vtitle">The golden fails two of its own criteria</div><div class="vgrid"><div class="vcol"><div class="vq"><span class="who">The client</span>In windy-city-return-freight the prompt asks which option to pick. R24 needs one recommended route. The golden says not to pick an option now. It also gives no Saturday evening drop-off hours for R35.</div><div class="vnote">R24 and R35: the 24th and 35th criteria in the delivered rubric.</div><div class="vrow"><span class="k">The task</span><div>Kofi flies home from a Chicago record fair with one bag, and the hall must be empty Saturday night. He wants the ways to get his stock and cartons home compared, <strong>and a pick</strong></div></div><div class="vk bad">Where it shows</div><div class="vrow"><span class="k">Golden</span><div><span class="q"><span class="mk-bad">Don't pick an option now.</span> Pick it at 5 PM on Saturday&hellip;</span>, in the section headed What I'd do</div></div><div class="vrow"><span class="k">Golden</span><div>Its only opening hours are a <span class="q">Counters open on a Sunday</span> table</div></div><div class="vrow"><span class="k">Also</span><div>A closer look found it fails two more criteria the client did not name</div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><div class="vnote" style="color:#c8d6ec;font-size:16px;">The criteria follow the prompt, so the golden is the side to fix.</div><ol class="vsteps"><li>Steer at intent level until the page meets every criterion, for example: <span class="q">I still need to know which one you'd pick before I leave</span></li><li>The page <strong>ends with one recommended route</strong> that works without a vehicle, starts no packing before 5:00 PM and leaves no carton in the hall after 7:30 PM on Saturday</li><li>It <strong>names a counter near the hall to leave the cartons at, with its Saturday evening and Sunday hours</strong>, as read during the run</li><li>No trace of the conversation: the old golden opened with <span class="q">Corrections to the first version</span></li><li>Before you complete it, <strong>point to the line that passes each criterion</strong></li></ol></div></div><div class="vfoot"><b>Guidelines</b><span>3.5 Before You Wrap the Golden Up &middot; 5.6 Final Rubric Checklist</span></div></div></details><details class="ce-ex real"><summary aria-label="Example 4, real client example: certificate-savings-split"><span class="n">4</span><span class="shut-only"><span class="tk">Real</span> certificate-savings-split <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 4"><div class="vh"><span class="src real">Real client example</span><span class="vt">Example 4 &middot; certificate-savings-split</span><span class="vd">Client report &middot; Oct 21 delivery &middot; flag 03</span></div><div class="vtitle">Here the criterion was the side to fix</div><div class="vgrid"><div class="vcol"><div class="vq"><span class="who">The client</span>The certificate-savings-split golden's largest amount is $16,546, which R11 doesn't accept. [&hellip;] R11 accepts only $15,796.17 or $15,581.17, or either rounded down to the nearest $100.</div><div class="vrow"><span class="k">The task</span><div>Elena asks how much of her savings she could lock into a 12 month certificate without getting caught short, and what it would earn</div></div><div class="vk bad">Where it shows</div><div class="vrow"><span class="k">Criterion</span><div>Largest amount <span class="mk-bad">$15,796.17 or $15,581.17</span>: today's $23,480.17 minus the $3,000 cushion, the $684 insurance and Hazel's reserve</div></div><div class="vrow"><span class="k">Golden</span><div><span class="mk-on">$16,546</span>: the same sum, plus the three $250 autosaves that post before the January bills</div></div><div class="vrow"><span class="k">Data</span><div>Her fridge note keeps autosave on, so <strong>both readings follow from the task's own data</strong></div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><ol class="vsteps"><li><strong>Rewrite the criterion to accept both readings</strong>: from today's balance alone ($15,796.17 or $15,581.17), or also counting the month end autosaves ($16,546.17 or $16,331.17)</li><li><strong>The golden stays as it is.</strong> It was a correct answer the criterion rejected</li><li>Test the criterion both ways: <strong>two valid answers pass, a wrong one fails</strong></li></ol><div class="vnote">A golden that fails a criterion is not always wrong. Decide which side is, and fix only that side.</div></div></div><div class="vfoot"><b>Guidelines</b><span>5.1 Rubric Fundamentals: fits the request exactly &middot; 5.6 Final Rubric Checklist</span></div></div></details></div></div></div>
+    </div>
+  </div>
+  <div class="footer-meta">Common Errors &middot; Client Flags</div>
+  <div class="footer-brand">Golden And Rubric</div>
+</div></div>
+<div class="slide-fit"><div class="slide full ce" id="slide-19">
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>1.2.3 Create the Prompt &middot; 5.1 Rubric Fundamentals &middot; 5.6 Final Rubric Checklist</span></div>
+  <div class="slide-inner">
+    <div class="content">
+      <div class="ce-top"><div class="section-num">Common Errors &middot; 3 of 7</div><span class="st back">Came back</span></div>
+      <h1>No Link Code In The Prompt Or Criteria</h1>
+      <div class="tagline">Editors turn file and site names into markdown links as you paste: the agent reads a garbled request, and a criterion stops matching the real name</div>
+      <div class="ce-cols">
+        <div class="ce-card bad">
+          <div class="ce-ch"><span class="lab">&#10005; The mistake</span><span class="sp"></span><span class="src real">Real client example</span><span class="where">Oct 26 delivery</span></div>
+          <div class="ce-r"><span class="k">Prompt</span><div class="v"><span class="q">&hellip;the outreach messages to go with it in buyer_outreach<span class="mk-bad">&#92;_[drafts.md](http://drafts.md)</span>, ready for me to send myself.</span><small>gift-lot-wholesale, as submitted</small></div></div>
+          <div class="ce-r"><span class="k">Criteria</span><div class="v"><span class="code">fieldlog_video<span class="mk-bad">&#92;_[note.md](http://note.md)</span></span><small>fieldlog-demo-video, in 4 criteria</small></div></div>
+          <div class="ce-r"><span class="k">Oct 21</span><div class="v"><div class="codes"><span>[CHEWY.COM](http://CHEWY.COM)</span><span>&#92;[password&#92;]</span><span>&#92;*&#92;*&#92;*&#92;*4471</span><span>&#92;[EDIT&#92;] reworded&hellip;</span></div><small>Links, stray backslashes and an editor note, across 11 tasks</small></div></div>
+          <div class="ce-why"><b>Why it fails</b>A name ending in .md reads as a web address, so the editor links it and escapes the underscore. The agent gets link code where a file name belongs.</div>
+        </div>
+        <div class="ce-card ok">
+          <div class="ce-ch"><span class="lab">&#10003; Done right &middot; plain text</span></div>
+          <div class="ce-r"><span class="k">Prompt</span><div class="v"><span class="q">&hellip;the outreach messages to go with it in <span class="mk-ok">buyer_outreach_drafts.md</span>, ready for me to send myself.</span></div></div>
+          <div class="ce-r"><span class="k">Criteria</span><div class="v"><span class="code mk-ok">fieldlog_video_note.md</span></div></div>
+          <div class="ce-r"><span class="k">Search</span><div class="v"><div class="find"><span>](http <i>0 results</i></span><span>](mailto <i>0 results</i></span><span>&#92; <i>0 results</i></span></div><small>In the prompt and every criterion, as the platform shows them</small></div></div>
+          <div class="ce-note">Search what the platform shows, not your draft: the link appears when you paste. <strong>A prompt fix means a new golden and 8 new runs</strong>, so search before the golden runs.</div>
+        </div>
+      </div>
+      <div class="ce-bar"><div class="ce-check"><div class="h">Before you submit</div><div class="t">The prompt and the criteria have no ](http, no ](mailto and no stray backslash such as &#92;_.</div></div><div class="ce-exs"><div class="h">Open the cases</div><div class="row"><details class="ce-ex real"><summary aria-label="Example 5, real client example: gift-lot-wholesale"><span class="n">5</span><span class="shut-only"><span class="tk">Real</span> gift-lot-wholesale <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 5"><div class="vh"><span class="src real">Real client example</span><span class="vt">Example 5 &middot; gift-lot-wholesale</span><span class="vd">Client report &middot; Oct 26 delivery &middot; flag 03</span></div><div class="vtitle">A deliverable's name turned into a link, in the prompt and in 10 criteria</div><div class="vgrid"><div class="vcol"><div class="vq"><span class="who">The client</span>Plain text in prompts and criteria was converted into markdown links, such as file names. This is the same problem as the website names in our Oct 20 report. [&hellip;] gift-lot-wholesale (&hellip;): prompt.txt reads [drafts.md](http://drafts.md).</div><div class="vrow"><span class="k">The task</span><div>Marisela wants a wholesale sell sheet and the outreach drafts she sends herself, in <span class="code">buyer_outreach_drafts.md</span></div></div><div class="vk bad">Where it shows</div><div class="vrow"><span class="k">Prompt</span><div><span class="q">&hellip;in buyer_outreach<span class="mk-bad">&#92;_[drafts.md](http://drafts.md)</span>, ready for me to send myself.</span></div></div><div class="vrow"><span class="k">Criteria</span><div>The same markup in <strong>10 criteria</strong>, 8 objective and 2 subjective, and email addresses as <span class="code">mailto</span> links in 3 more</div></div><div class="vrow"><span class="k">Effect</span><div>Both runs still wrote the right file, but the prompt had to change, and <strong>every run uses the prompt word for word</strong></div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><div class="vrow"><span class="k">Prompt</span><div><span class="q">&hellip;in <span class="mk-ok">buyer_outreach_drafts.md</span>, ready for me to send myself.</span> Nothing else changes</div></div><div class="vrow"><span class="k">Criteria</span><div>The file name and the email addresses in plain text, with each criterion's wording, weight, category and target kept</div></div><div class="vk">Then</div><ol class="vsteps"><li>Save, reopen and search again: <strong>no ](http, no ](mailto, no &#92;_</strong>. The editor can turn a name ending in .md back into a link</li><li>Today a prompt fix means <strong>a new golden and 8 new runs</strong>, so search before the golden runs</li></ol></div></div><div class="vfoot"><b>Guidelines</b><span>1.2.3 Create the Prompt &middot; 5.1 Rubric Fundamentals: literal matching &middot; 5.6 Final Rubric Checklist</span></div></div></details><details class="ce-ex real"><summary aria-label="Example 6, real client example: fieldlog-demo-video"><span class="n">6</span><span class="shut-only"><span class="tk">Real</span> fieldlog-demo-video <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 6"><div class="vh"><span class="src real">Real client example</span><span class="vt">Example 6 &middot; fieldlog-demo-video</span><span class="vd">Client report &middot; Oct 26 delivery &middot; flag 03</span></div><div class="vtitle">A clean prompt, linked criteria: a text fix, and nothing reruns</div><div class="vgrid"><div class="vcol"><div class="vq"><span class="who">The client</span>fieldlog-demo-video (&hellip;): R22, R23, R26 and R33 turn the deliverable fieldlog_video_note.md into a link.</div><div class="vk bad">Where it shows</div><div class="vrow"><span class="k">4 criteria</span><div><span class="code">fieldlog_video<span class="mk-bad">&#92;_[note.md](http://note.md)</span></span></div></div><div class="vrow"><span class="k">2 criteria</span><div><span class="code"><span class="mk-bad">[shoplog.agplanttools.com](http://shoplog.agplanttools.com)</span></span>, and the same for the FieldLog site</div></div><div class="vq"><span class="who">The client &middot; Oct 21 delivery, 11 tasks</span>Seven tasks have website names turned into markdown links in their criteria, such as [CHEWY.COM](http://CHEWY.COM). Four more have stray backslashes or a leftover editor note.</div><div class="codes"><span>&#92;[password&#92;]</span><span>&#92;*&#92;*&#92;*&#92;*4471</span><span>&#92;[EDIT&#92;] reworded, no longer needs the shop and fair names.</span></div></div><div class="vcol"><div class="vk ok">What it should have been</div><div class="vrow"><span class="k">Criteria</span><div><span class="code mk-ok">fieldlog_video_note.md</span> &nbsp;<span class="code mk-ok">shoplog.agplanttools.com</span></div></div><div class="vrow"><span class="k">Effect</span><div>The prompt was clean, so <strong>nothing reruns and no rating changes</strong></div></div><div class="vk">Before you submit</div><ol class="vsteps"><li>Search the prompt and both blocks <strong>as the platform shows them</strong>, not your draft: the link appears when you paste</li><li>Search for <span class="code">](http</span>, <span class="code">](mailto</span> and a backslash. <strong>Zero matches</strong></li><li>No editor notes left in a criterion</li></ol></div></div><div class="vfoot"><b>Guidelines</b><span>5.1 Rubric Fundamentals: literal matching &middot; 5.6 Final Rubric Checklist</span></div></div></details></div></div></div>
+    </div>
+  </div>
+  <div class="footer-meta">Common Errors &middot; Client Flags</div>
+  <div class="footer-brand">Link Code</div>
+</div></div>
+<div class="slide-fit"><div class="slide full ce" id="slide-20">
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>1.2.1 Start With the Universe &middot; 1.2.3 Create the Prompt &middot; 5.1 Rubric Fundamentals</span></div>
+  <div class="slide-inner">
+    <div class="content">
+      <div class="ce-top"><div class="section-num">Common Errors &middot; 4 of 7</div><span class="st new">New</span></div>
+      <h1>State Today's Date, Grade Fixed Dates</h1>
+      <div class="tagline">With no date in the prompt, each run goes by its own clock, and tonight or today stops having one right answer</div>
+      <div class="ce-cols">
+        <div class="ce-card bad">
+          <div class="ce-ch"><span class="lab">&#10005; The mistake</span></div>
+          <div class="ce-sub">
+            <div class="h"><span class="src real">Real</span>No date in the prompt <span class="where">Oct 21 &middot; fiesta-lake-calendar</span></div>
+            <div class="ce-r"><span class="k">Prompt</span><div class="v"><span class="q">&hellip;the rest of the year laid out for us, <span class="mk-bad">today through December 31</span>, so nothing collides.</span></div></div>
+            <div class="tl"><div class="d bad"><b>The run's clock</b>Fri Oct 16</div><div class="a">&ne;</div><div class="d"><b>Records end</b>Mon Nov 2</div><div class="a">&ne;</div><div class="d"><b>Criteria start</b>Tue Nov 3</div></div>
+          </div>
+          <div class="ce-sub">
+            <div class="h"><span class="src real">Real</span>A relative date in a criterion <span class="where">Oct 26 &middot; june-thank-you-gift</span></div>
+            <div class="ce-r"><span class="k">Criterion</span><div class="v"><span class="q">&hellip;can be in hand in time for book club <span class="mk-bad">tonight</span></span><small>True only if today is Sat Oct 24, which the prompt never says</small></div></div>
+          </div>
+          <div class="ce-why"><b>Why it fails</b>Each run takes today from its own clock: one run planned from Nov 3, the golden from Nov 2, and a run that trusted its clock would start on Oct 16.</div>
+        </div>
+        <div class="ce-card ok">
+          <div class="ce-ch"><span class="lab">&#10003; Done right</span></div>
+          <div class="ce-r"><span class="k">Prompt</span><div class="v"><span class="q"><span class="mk-ok">It's Monday, November 2.</span> &hellip;the rest of the year laid out for us, <span class="mk-ok">from tomorrow</span> through December 31, so nothing collides.</span><small>In the user's voice, on the day the universe's records stop</small></div></div>
+          <div class="ce-r"><span class="k">Criterion</span><div class="v"><span class="q">&hellip;can be in hand <span class="mk-ok">before book club at 7 PM on Sat, Oct 24, 2026</span></span><small>Fixed dates, never tonight, tomorrow or in time</small></div></div>
+          <div class="ce-r"><span class="k">Records</span><div class="v">An offer, a quote or a hold a criterion depends on: <strong>open the data and check its expiry date</strong></div></div>
+          <div class="ce-note">A prompt change means a new golden and 8 new runs: <strong>settle the date before the golden runs.</strong></div>
+        </div>
+      </div>
+      <div class="ce-bar"><div class="ce-check"><div class="h">Before you submit</div><div class="t">The prompt states today's date, criteria use fixed dates, and no graded record expires around delivery.</div></div><div class="ce-exs"><div class="h">Open the cases</div><div class="row"><details class="ce-ex real"><summary aria-label="Example 7, real client example: fiesta-lake-calendar"><span class="n">7</span><span class="shut-only"><span class="tk">Real</span> fiesta-lake-calendar <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 7"><div class="vh"><span class="src real">Real client example</span><span class="vt">Example 7 &middot; fiesta-lake-calendar</span><span class="vd">Client report &middot; Oct 21 delivery &middot; flag 05</span></div><div class="vtitle">No date in the prompt: the run planned from its own clock</div><div class="vgrid"><div class="vcol"><div class="vq"><span class="who">The client</span>The gateway has a clock API, but no task we checked sets a time, and these three prompts don't say what today is. [&hellip;] fiesta-lake-calendar asks for "today through December 31". The recorded run got Oct 16 from its clock, while the task data and R27 and R32 start on Nov 3.</div><div class="vk bad">Where it shows</div><div class="vrow"><span class="k">Prompt</span><div><span class="q">Before I tell anybody yes I want the rest of the year laid out for us, <span class="mk-bad">today through December 31</span>, so nothing collides.</span></div></div><div class="vrow"><span class="k">Data</span><div>The universe stops on the evening of <strong>Monday, Nov 2</strong></div></div><div class="vrow"><span class="k">Run</span><div><span class="q">today is given as 2026-10-16 but the inbox has mail through Nov 2</span>, then built from Tue Nov 3</div></div><div class="vrow"><span class="k">Golden</span><div>Built from Mon Nov 2, warning <span class="q">if that's wrong the first two weeks shift</span></div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><div class="vrow"><span class="k">Prompt</span><div><span class="q"><span class="mk-ok">It's Monday, November 2.</span> Before I tell anybody yes I want the rest of the year laid out for us, <span class="mk-ok">from tomorrow</span> through December 31, so nothing collides.</span></div></div><ol class="vsteps"><li>The date goes <strong>in the user's voice</strong>, matching the day the universe's records stop</li><li>The criteria already named fixed dates, Tue Nov 3 to Dec 31, so they stay</li><li>Note the stated date in the Draft History</li><li>A prompt change means <strong>a new golden and 8 new runs</strong>: state the date before the golden runs</li></ol><div class="vnote">Two runs, two first days. A run that trusted its clock would have planned from Oct 16, with key emails still in the future.</div></div></div><div class="vfoot"><b>Guidelines</b><span>1.2.1 Start With the Universe &middot; 1.2.3 Create the Prompt</span></div></div></details><details class="ce-ex real"><summary aria-label="Example 8, real client example: june-thank-you-gift"><span class="n">8</span><span class="shut-only"><span class="tk">Real</span> june-thank-you-gift <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 8"><div class="vh"><span class="src real">Real client example</span><span class="vt">Example 8 &middot; june-thank-you-gift</span><span class="vd">Client report &middot; Oct 26 delivery &middot; flag 04</span></div><div class="vtitle">A criterion that is true on one day only</div><div class="vgrid"><div class="vcol"><div class="vq"><span class="who">The client</span>In june-thank-you-gift the prompt never gives today's date, but R3 asks whether each gift arrives in time for book club tonight, which assumes today is Sat Oct 24.</div><div class="vrow"><span class="k">The task</span><div>Elena wants thank you gift ideas for her lead baker in a deck, each with its price, delivery date and whether it arrives before book club</div></div><div class="vk bad">Where it shows</div><div class="vrow"><span class="k">Criterion</span><div><span class="q">&hellip;can be in hand in time for book club <span class="mk-bad">tonight</span>&hellip;</span></div></div><div class="vrow"><span class="k">Data</span><div>Book club is a fixed event in the universe: <strong>Sat Oct 24, 7 PM</strong>. Tonight is right only for a run on that day</div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><div class="vrow"><span class="k">Criterion</span><div><span class="q">&hellip;can be in hand <span class="mk-ok">before book club at 7 PM on Sat, Oct 24, 2026</span>&hellip;</span></div></div><ol class="vsteps"><li><strong>Fixed dates in every criterion</strong>: never tonight, tomorrow, this week or in time</li><li>In this task only the criterion changed: its store prices and delivery dates were already graded as read during the run</li><li>In a new task, <strong>state today's date in the prompt</strong> as well</li></ol></div></div><div class="vfoot"><b>Guidelines</b><span>1.2.3 Create the Prompt &middot; 5.1 Rubric Fundamentals</span></div></div></details></div></div></div>
+    </div>
+  </div>
+  <div class="footer-meta">Common Errors &middot; Client Flags</div>
+  <div class="footer-brand">Stated Dates</div>
+</div></div>
+<div class="slide-fit"><div class="slide full ce" id="slide-21">
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>1.2.1 Start With the Universe &middot; 1.2.5 Common Scenario Issues &middot; 8.3 The Services in the Universe</span></div>
+  <div class="slide-inner">
+    <div class="content">
+      <div class="ce-top"><div class="section-num">Common Errors &middot; 5 of 7</div><span class="st new">New</span></div>
+      <h1>Dates On A Live Server Need A Month</h1>
+      <div class="tagline">Duffel answers from a live server: once a date has passed or an offer has expired, no run can find it, however good it is</div>
+      <div class="ce-cols">
+        <div class="ce-card bad">
+          <div class="ce-ch"><span class="lab">&#10005; The mistake</span></div>
+          <div class="ce-sub">
+            <div class="h"><span class="src real">Real</span>An offer that expired before the runs <span class="where">Oct 26 &middot; expo-hotel-choice</span></div>
+            <div class="ce-r"><span class="k">Data</span><div class="v"><span class="code mk-bad">"expires_at": "2026-10-21T23:41:03Z"</span><small>The only record of the flights two criteria grade. It expired the day before both runs: the golden's search came back empty, and it planned around a flight she never priced</small></div></div>
+          </div>
+          <div class="ce-sub">
+            <div class="h"><span class="src rec">Recreated</span>A flight date that passes before the review</div>
+            <div class="tl"><div class="d ok"><b>Oct 20 &middot; written</b>Flights for Fri Oct 30 found</div><div class="a">&rarr;</div><div class="d"><b>Oct 30</b>The date passes</div><div class="a">&rarr;</div><div class="d bad"><b>Mid Nov &middot; review</b>No flights at all</div></div>
+          </div>
+          <div class="ce-why"><b>Why it fails</b>The server no longer answers for that date, so no run can meet the criteria. Stating the date in the prompt does not help here.</div>
+        </div>
+        <div class="ce-card ok">
+          <div class="ce-ch"><span class="lab">&#10003; Done right &middot; a month of room</span></div>
+          <div class="tl"><div class="d ok"><b>Oct 20 &middot; written</b>Flight set a month ahead</div><div class="a">&rarr;</div><div class="d ok"><b>Mid Nov &middot; review</b>Still searchable</div><div class="a">&rarr;</div><div class="d ok"><b>Fri, Nov 20 or later</b>The flight date</div></div>
+          <ul class="ce-li c" style="margin-top:10px;">
+            <li><strong>Find which services answer from a live server</strong> while you design the scenario: Duffel for flights is the clearest case</li>
+            <li>Every date the agent searches or books there sits <strong>at least a month after the day you write the task</strong>: the flight, the stay, the booking</li>
+            <li>State that date in the prompt as usual, and <strong>grade the rules the choice meets</strong>, never one offer: offers expire</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ce-bar"><div class="ce-check"><div class="h">Before you submit</div><div class="t">Every date the scenario searches or books on a live server, such as Duffel, is at least a month after the day you write the task.</div></div><div class="ce-exs"><div class="h">Open the cases</div><div class="row"><details class="ce-ex real"><summary aria-label="Example 9, real client example: expo-hotel-choice"><span class="n">9</span><span class="shut-only"><span class="tk">Real</span> expo-hotel-choice <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 9"><div class="vh"><span class="src real">Real client example</span><span class="vt">Example 9 &middot; expo-hotel-choice</span><span class="vd">Client report &middot; Oct 26 delivery &middot; flag 04</span></div><div class="vtitle">The flights two criteria grade had expired before the runs</div><div class="vgrid"><div class="vcol"><div class="vq"><span class="who">The client</span>In expo-hotel-choice, graded flight offers in the Duffel data expire on Oct 21. [&hellip;] R26 and R37 grade the later United flights, which exist only as these offers.</div><div class="vrow"><span class="k">The task</span><div>Elena needs a hotel for next May's baking expo in Chicago, May 16 to 18, 2027, weighed against her flights and sessions on one page</div></div><div class="vk bad">Where it shows</div><div class="vrow"><span class="k">Data</span><div>Her note says she priced <strong>UA 5421, landing at 2:03 PM</strong> on Sun May 16, 2027. Its only record: a Duffel offer, <span class="code mk-bad">"expires_at": "2026-10-21T23:41:03Z"</span></div></div><div class="vrow"><span class="k">Golden</span><div>Its flight search came back empty, so it planned Sunday on a flight landing around 7:02 PM and told her she arrives hours late everywhere: <strong>the opposite answer</strong></div></div><div class="vrow"><span class="k">Runs</span><div>The offer expired the day before both runs. <strong>No run after Oct 21 can meet the criterion</strong></div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><ol class="vsteps"><li><strong>Put what is graded where it cannot expire</strong>: here, a screenshot of the fare she priced as an input (UA 5421 landing 2:03 PM, UA 5388 leaving 5:41 PM, $446.38)</li><li>Rewrite the criterion to <strong>name the flight and the landing time</strong> it grades against</li><li>New inputs mean <strong>a new golden and 8 new runs</strong></li><li>In a new task, open the data and <strong>check the expiry of anything a criterion depends on</strong>; on a live server, keep every date a month ahead</li></ol></div></div><div class="vfoot"><b>Guidelines</b><span>1.2.1 Start With the Universe &middot; 8.3 The Services in the Universe</span></div></div></details><details class="ce-ex rec"><summary aria-label="Example 10, recreated scenario: A flight to Lisbon"><span class="n">10</span><span class="shut-only"><span class="tk">Recreated</span> A flight to Lisbon <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 10"><div class="vh"><span class="src rec">Recreated scenario</span><span class="vt">Example 10 &middot; A flight to Lisbon</span><span class="vd">Recreated from the client's Nov 2 flag</span></div><div class="vtitle">Right on the day it was written, impossible by the review</div><div class="vgrid"><div class="vcol"><div class="vq rec"><span class="who">The scenario</span>The task is written on Oct 20. The user asks for a direct flight to Lisbon on Friday, Oct 30, landing before 6 pm, and the criteria grade the flight the run picks against those rules.</div><div class="vk bad">Where it shows</div><div class="tl"><div class="d ok"><b>Oct 20 &middot; written</b>Duffel returns Oct 30 flights. The golden passes</div><div class="a">&rarr;</div><div class="d"><b>Oct 30</b>The flight date passes</div><div class="a">&rarr;</div><div class="d bad"><b>Mid Nov &middot; review</b>No flights for Oct 30</div></div><div class="vrow"><span class="k">Effect</span><div>No run can meet the criteria, however good it is. <strong>Stating the date does not help</strong>: the server itself no longer answers for it</div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><div class="tl"><div class="d ok"><b>Oct 20 &middot; written</b>Flight set a month ahead</div><div class="a">&rarr;</div><div class="d ok"><b>Mid Nov &middot; review</b>Still searchable</div><div class="a">&rarr;</div><div class="d ok"><b>Fri, Nov 20 or later</b>The flight date</div></div><ol class="vsteps"><li><strong>Find which services answer from a live server</strong> while you design the scenario: Duffel for flights is the clearest case</li><li>Put every date the agent searches or books there <strong>at least a month after the day you write the task</strong>: the flight, the stay, the booking</li><li>State that date in the prompt as usual, and <strong>grade the rules the choice meets</strong> (direct, lands before 6 pm), never one offer: offers expire</li></ol></div></div><div class="vfoot"><b>Guidelines</b><span>1.2.1 Start With the Universe &middot; 1.2.5 Common Scenario Issues &middot; 8.3 The Services in the Universe</span></div></div></details></div></div></div>
+    </div>
+  </div>
+  <div class="footer-meta">Common Errors &middot; Client Flags</div>
+  <div class="footer-brand">Live Server Dates</div>
+</div></div>
+<div class="slide-fit"><div class="slide full ce" id="slide-22">
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>5.1 Rubric Fundamentals &middot; 5.1.2 OR Logic &middot; 5.6 Final Rubric Checklist</span></div>
+  <div class="slide-inner">
+    <div class="content">
+      <div class="ce-top"><div class="section-num">Common Errors &middot; 6 of 7</div><span class="st new">New</span></div>
+      <h1>A Correct Answer Never Fails A Criterion</h1>
+      <div class="tagline">Use the user's own boundary everywhere, and settle every value that sits exactly on it</div>
+      <div class="ce-cols">
+        <div class="ce-card bad">
+          <div class="ce-ch"><span class="lab">&#10005; The mistake</span><span class="sp"></span><span class="src real">Real client example</span><span class="where">Oct 26 &middot; thanksgiving-jobs-video</span></div>
+          <div class="ce-r"><span class="k">Rule</span><div class="v"><span class="q">Only if it stays <span class="mk-on">below 40</span> degrees out there.</span><small>The family's own message: 40 itself counts as too warm</small></div></div>
+          <div class="ce-r"><span class="k">Criterion</span><div class="v"><span class="q"><span class="mk-bad">23 of 30</span> daily highs above 40</span><small>Strictly above, so the day at exactly 40 is left out</small></div></div>
+          <div class="ce-r"><span class="k">Data</span><div class="v"><div class="dots"><i class="lo"></i><i class="lo"></i><i class="lo"></i><i class="lo"></i><i class="lo"></i><i class="lo"></i><i class="on"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i><i class="hi"></i></div><div class="dotkey"><span><i style="background:rgba(94,179,255,.55);"></i>6 below 40</span><span><i style="background:#f2c14e;"></i>1 exactly 40</span><span><i style="background:rgba(255,138,150,.6);"></i>23 above 40</span></div><small>The 30 daily highs, Nov 24 to 26, 2016 to 2025</small></div></div>
+          <div class="ce-why"><b>Why it fails</b>40 is not below 40, so by her rule it counts as too warm: 24 of 30. The run counted 24 and failed. Two answers were correct, and the criterion took one.</div>
+        </div>
+        <div class="ce-card ok">
+          <div class="ce-ch"><span class="lab">&#10003; Done right &middot; accept every valid answer</span></div>
+          <div class="ce-r"><span class="k">Criterion</span><div class="v"><span class="q">&hellip;matches the threshold it states: <span class="mk-ok">23 of 30 above 40&deg;F (about 77%)</span>, or <span class="mk-ok">24 of 30 at or above 40&deg;F (80%)</span>&hellip;</span></div></div>
+          <div class="ce-r"><span class="k">Test</span><div class="v"><div class="pills"><span class="ok">&#10003; 23, above 40</span><span class="ok">&#10003; 24, at or above 40</span><span class="bad">&#10005; any other count</span></div></div></div>
+          <ul class="ce-li c" style="margin-top:8px;">
+            <li><strong>One boundary</strong> in the prompt, the inputs and the rubric</li>
+            <li>Look in the data for <strong>values exactly on a threshold</strong>, then settle how they count or accept both</li>
+            <li>Test both ways: <strong>two valid answers pass, a wrong one fails</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="ce-bar"><div class="ce-check"><div class="h">Before you submit</div><div class="t">Thresholds match between the user's rule and the rubric, and values sitting exactly on a boundary are handled.</div></div><div class="ce-exs"><div class="h">Open the cases</div><div class="row"><details class="ce-ex real"><summary aria-label="Example 11, real client example: thanksgiving-jobs-video"><span class="n">11</span><span class="shut-only"><span class="tk">Real</span> thanksgiving-jobs-video <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 11"><div class="vh"><span class="src real">Real client example</span><span class="vt">Example 11 &middot; thanksgiving-jobs-video</span><span class="vd">Client report &middot; Oct 26 delivery &middot; flag 05</span></div><div class="vtitle">The user's rule makes it 24, the criterion accepted only 23</div><div class="vgrid"><div class="vcol"><div class="vq"><span class="who">The client</span>In thanksgiving-jobs-video, R25 and R26 count days above 40F. The task's own rule is "only if it stays below 40". The data has one high and one low of exactly 40, so 24 of 30 and 4 of 30 are as right as 23 and 3.</div><div class="vrow"><span class="k">The task</span><div>Grace wants a family video on Thanksgiving jobs, and whether Dad's plan to keep the turkey in the garage overnight is safe</div></div><div class="vk bad">Where it shows</div><div class="vrow"><span class="k">Message</span><div><span class="q">Only if it stays <span class="mk-on">below 40</span> degrees out there.</span> 40 itself counts as too warm</div></div><div class="vrow"><span class="k">Screenshot</span><div>The food safety chart's <span class="q">40&deg;F (4&deg;C) or below</span> makes 40 safe: <strong>the task's own sources disagree at exactly 40</strong></div></div><div class="vrow"><span class="k">Criteria</span><div><span class="q"><span class="mk-bad">23 of 30</span> daily highs above 40</span> and 3 of 30 lows, strictly above</div></div><div class="vrow"><span class="k">Runs</span><div>The run counted at or above 40, <strong>24 of 30 and 4 of 30</strong>, and failed both</div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><div class="vrow"><span class="k">Highs</span><div><span class="q">&hellip;matches the threshold it states: <span class="mk-ok">23 of 30 above 40&deg;F (about 77%)</span>, or <span class="mk-ok">24 of 30 at or above 40&deg;F (80%)</span>, using a count, fraction or correctly rounded percentage.</span></div></div><div class="vrow"><span class="k">Lows</span><div><span class="mk-ok">3 of 30 above 40&deg;F (10%)</span>, or <span class="mk-ok">4 of 30 at or above 40&deg;F (about 13%)</span></div></div><div class="vnote">Accepting both raised the run's score, and the task then needed more genuine complexity in its scenario. Never a bent rubric: see Example 2.</div></div></div><div class="vfoot"><b>Guidelines</b><span>5.1 Rubric Fundamentals: fits the request exactly &middot; 5.1.2 OR Logic &middot; 5.6 Final Rubric Checklist</span></div></div></details><details class="ce-ex real"><summary aria-label="Example 12, real client example: biscuit-food-shipment"><span class="n">12</span><span class="shut-only"><span class="tk">Real</span> biscuit-food-shipment <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 12"><div class="vh"><span class="src real">Real client example</span><span class="vt">Example 12 &middot; biscuit-food-shipment</span><span class="vd">Client report &middot; Oct 21 delivery &middot; flag 04</span></div><div class="vtitle">A deadline the records support, rejected</div><div class="vgrid"><div class="vcol"><div class="vq"><span class="who">The client</span>In biscuit-food-shipment, R14 fails any time on Wednesday, November 4, but R15 bases the deadline on processing that starts at 2:20 AM that Wednesday, so "before 2:20 AM Wednesday" is correct but fails.</div><div class="vrow"><span class="k">The task</span><div>Ray asks by when, in Phoenix time, he can still change his dog's Chewy order, going by what the app says</div></div><div class="vk bad">Where it shows</div><div class="vrow"><span class="k">Criterion</span><div>Only Tuesday night passes: <span class="q">Giving Monday, November 2, <span class="mk-bad">any time on Wednesday, November 4</span> (the ship date), or a time in UTC or MDT as the latest safe time does not pass.</span></div></div><div class="vrow"><span class="k">Records</span><div>The app: <span class="q">You can change or skip this order until we start processing it</span>. His six past orders were charged from 2:20 AM on the ship date at the earliest</div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><div class="vrow"><span class="k">Criterion</span><div>The latest safe time is <span class="mk-ok">either Tuesday night, November 3, 2026</span>, <span class="mk-ok">or a time on Wednesday, November 4, 2026 before 2:20 AM MST</span>, the earliest time one of his six past orders was charged</div></div><ol class="vsteps"><li>It <strong>still fails what is wrong</strong>: Monday, a Wednesday time at or after 2:20 AM, and times in UTC or MDT</li><li>Test it both ways: <strong>both valid answers pass, a wrong one fails</strong></li></ol></div></div><div class="vfoot"><b>Guidelines</b><span>5.1 Rubric Fundamentals: fits the request exactly &middot; 5.1.2 OR Logic</span></div></div></details></div></div></div>
+    </div>
+  </div>
+  <div class="footer-meta">Common Errors &middot; Client Flags</div>
+  <div class="footer-brand">Boundaries</div>
+</div></div>
+<div class="slide-fit"><div class="slide full ce" id="slide-23">
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>5.1 Rubric Fundamentals &middot; 5.6 Final Rubric Checklist &middot; 8.3.1 The Built-in Tools</span></div>
+  <div class="slide-inner">
+    <div class="content">
+      <div class="ce-top"><div class="section-num">Common Errors &middot; 7 of 7</div><span class="st rule">Existing rule</span></div>
+      <h1>Grade The Live Value As Retrieved</h1>
+      <div class="tagline">Prices, rates and availability move on their own: a run that fetches today's correct value must never fail</div>
+      <div class="ce-cols">
+        <div class="ce-card bad">
+          <div class="ce-ch"><span class="lab">&#10005; The mistake</span></div>
+          <div class="ce-sub">
+            <div class="h"><span class="src real">Real</span>A rates page frozen in place <span class="where">Oct 21 &middot; certificate-savings-split</span></div>
+            <div class="ce-r"><span class="k">Criterion</span><div class="v"><span class="q">&hellip;reports Mountain CU's rates page as <span class="mk-bad">'Rates effective October 16, 2026'</span>, gives the regular 12-month certificate as <span class="mk-bad">3.35% APY</span>, and says the page was checked on <span class="mk-bad">2026-10-20</span>.</span><small>No input holds these values: the run reads them live</small></div></div>
+          </div>
+          <div class="ce-sub">
+            <div class="h"><span class="src real">Real</span>A total from live prices <span class="where">Oct 21 &middot; srp-plan-compare</span></div>
+            <div class="ce-r"><span class="k">Criterion</span><div class="v"><span class="q">&hellip;gives Basic a yearly cost of <span class="mk-bad">about $1,977</span></span><small>Worked out from the prices read on Oct 16</small></div></div>
+          </div>
+          <div class="ce-why"><b>Why it fails</b>The next price change, or a run on another day, fails a model that fetched the correct, current value.</div>
+        </div>
+        <div class="ce-card ok">
+          <div class="ce-ch"><span class="lab">&#10003; Done right &middot; grade the retrieval</span></div>
+          <div class="ce-r"><span class="k">Criterion</span><div class="v"><span class="q">&hellip;reports the 'Rates effective' date that Mountain CU's rates page shows for share certificates and the regular 12-month certificate APY listed there, <span class="mk-ok">as read during the run</span>, and gives the date of the run as the day the page was checked <span class="mk-ok">(e.g., in October 2026: 'Rates effective October 16, 2026', 3.35% APY, checked 2026-10-20)</span>.</span></div></div>
+          <ul class="ce-li c" style="margin-top:8px;">
+            <li><strong>Your figure goes in parentheses as an example.</strong> The file, the item and the source stay named</li>
+            <li>A total is checked against <strong>the prices the page says it read</strong></li>
+            <li><strong>Fixed values stay fixed</strong>: an attachment, a universe record or the GTFA must match its source exactly</li>
+          </ul>
+        </div>
+      </div>
+      <div class="ce-bar"><div class="ce-check"><div class="h">Before you submit</div><div class="t">No criterion requires a live price, rate or availability as a fixed figure: each grades the value retrieved during the run, with yours as an example.</div></div><div class="ce-exs"><div class="h">Open the cases</div><div class="row"><details class="ce-ex real"><summary aria-label="Example 13, real client example: certificate-savings-split"><span class="n">13</span><span class="shut-only"><span class="tk">Real</span> certificate-savings-split <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 13"><div class="vh"><span class="src real">Real client example</span><span class="vt">Example 13 &middot; certificate-savings-split</span><span class="vd">Client report &middot; Oct 21 delivery &middot; flag 07</span></div><div class="vtitle">A live rates page frozen into a criterion</div><div class="vgrid"><div class="vcol"><div class="vq"><span class="who">The client</span>certificate-savings-split's R21 requires Mountain CU's rates page to show "Rates effective October 16, 2026" and 3.35% APY. [&hellip;] When either page changes, a correct run fails.</div><div class="vk bad">Where it shows</div><div class="vrow"><span class="k">Criterion</span><div><span class="q">&hellip;reports Mountain CU's rates page as <span class="mk-bad">'Rates effective October 16, 2026'</span>, gives the regular 12-month certificate as <span class="mk-bad">3.35% APY</span>, and says the page was checked on <span class="mk-bad">2026-10-20</span>.</span></div></div><div class="vrow"><span class="k">Inputs</span><div>No input or universe record holds these values: <strong>the run reads them on the live site</strong></div></div><div class="vrow"><span class="k">Effect</span><div>The check date fails any correct run on another day, and the rate fails every one once the bank changes it</div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><div class="vrow"><span class="k">Criterion</span><div><span class="q">&hellip;reports the 'Rates effective' date that Mountain CU's rates page shows for share certificates and the regular 12-month certificate APY listed there, <span class="mk-ok">as read during the run</span>, and gives the date of the run as the day the page was checked <span class="mk-ok">(e.g., in October 2026: 'Rates effective October 16, 2026', 3.35% APY, checked 2026-10-20)</span>.</span></div></div><ol class="vsteps"><li>Two more criteria fixed the result of the user's <span class="q">go with whichever is newer</span> rule against the same page: they now compare the dates <strong>as read during the run</strong></li><li>No rating moved: the golden already met every rewrite</li></ol></div></div><div class="vfoot"><b>Guidelines</b><span>5.1 Rubric Fundamentals &middot; 8.3.1 The Built-in Tools</span></div></div></details><details class="ce-ex real"><summary aria-label="Example 14, real client example: srp-plan-compare"><span class="n">14</span><span class="shut-only"><span class="tk">Real</span> srp-plan-compare <span class="ar">&#8599;</span></span><span class="open-only">&larr; Back to slide</span></summary><div class="ce-view" role="group" aria-label="Example 14"><div class="vh"><span class="src real">Real client example</span><span class="vt">Example 14 &middot; srp-plan-compare</span><span class="vd">Client report &middot; Oct 21 delivery &middot; flag 07</span></div><div class="vtitle">A total worked out from live prices is live too</div><div class="vgrid"><div class="vcol"><div class="vq"><span class="who">The client</span>srp-plan-compare's R39 requires a yearly cost of about $1,977, while R23 has the agent read SRP's latest prices during the run. When either page changes, a correct run fails.</div><div class="vk bad">Where it shows</div><div class="vrow"><span class="k">Criterion</span><div><span class="q">&hellip;gives Basic a yearly cost of <span class="mk-bad">about $1,977</span> (standard prices) or $1,943 (May-Oct 2026 prices), within $10.</span></div></div><div class="vrow"><span class="k">Why</span><div>$1,977 is the year's use priced at the rates read on Oct 16. The task ships none of those prices, and the $10 margin absorbs a change of only 0.07&cent; a kWh</div></div><div class="vrow"><span class="k">Runs</span><div>On the same day, the two runs read <strong>two different price sheets</strong></div></div></div><div class="vcol"><div class="vk ok">What it should have been</div><div class="vrow"><span class="k">Criterion</span><div>Basic's yearly cost equals the year's use priced at <span class="mk-ok">the Basic prices the page gives as read from SRP during the run</span>, plus 12 monthly service charges and the 9.0% tax, within $10 <span class="mk-ok">(e.g., about $1,977 at 13.98&cent;, 12.04&cent; and 10.97&cent;)</span></div></div><ol class="vsteps"><li><strong>Check the arithmetic, not the figure</strong>: a stale price is caught by the criterion that grades the retrieval</li><li>The plans on offer and their peak hours are live too: <strong>grade them as SRP lists them on the day of the run</strong></li></ol></div></div><div class="vfoot"><b>Guidelines</b><span>5.1 Rubric Fundamentals &middot; 8.3.1 The Built-in Tools</span></div></div></details></div></div></div>
+    </div>
+  </div>
+  <div class="footer-meta">Common Errors &middot; Client Flags</div>
+  <div class="footer-brand">Live Values</div>
+</div></div>
+<div class="slide-fit"><div class="slide full ce" id="slide-24">
+  <div class="corner-tl"></div>
+  <div class="corner-br"></div>
+  <div class="guide-ref"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#5eb3ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg><b>Guidelines</b><span>5.6 Final Rubric Checklist &middot; 7.1 Grading All 8 Runs</span></div>
+  <div class="slide-inner">
+    <div class="content">
+      <div class="ce-top"><div class="section-num">Common Errors &middot; Before you submit</div></div>
+      <h1>Seven Checks Before You Submit</h1>
+      <div class="tagline">Tick them off against your own task. Each one answers a flag the client raised on delivered work</div>
+      <div class="ce-list">
+        <div class="ce-item"><label><input type="checkbox" aria-label="Check 1"><span class="t"><b>Genuine complexity.</b> Every criterion grades something the request requires, and the scenario alone keeps the average of the 8 runs at 0.7 or below</span></label><span class="step">Scenario</span><a class="go" href="#slide-17">Slide 17 &rarr;</a></div>
+        <div class="ce-item"><label><input type="checkbox" aria-label="Check 2"><span class="t"><b>Golden and rubric.</b> You can point to where the golden satisfies each criterion</span></label><span class="step">Golden</span><a class="go" href="#slide-18">Slide 18 &rarr;</a></div>
+        <div class="ce-item"><label><input type="checkbox" aria-label="Check 3"><span class="t"><b>Link code.</b> The prompt and the criteria, as the platform shows them, have no ](http, no ](mailto and no stray backslash</span></label><span class="step">Prompt</span><a class="go" href="#slide-19">Slide 19 &rarr;</a></div>
+        <div class="ce-item"><label><input type="checkbox" aria-label="Check 4"><span class="t"><b>Dates.</b> The prompt states today's date, criteria use fixed dates, and no graded record expires around delivery</span></label><span class="step">Prompt</span><a class="go" href="#slide-20">Slide 20 &rarr;</a></div>
+        <div class="ce-item"><label><input type="checkbox" aria-label="Check 5"><span class="t"><b>Live server dates.</b> Every date searched or booked on a live server, such as Duffel, is at least a month after the day you write the task</span></label><span class="step">Scenario</span><a class="go" href="#slide-21">Slide 21 &rarr;</a></div>
+        <div class="ce-item"><label><input type="checkbox" aria-label="Check 6"><span class="t"><b>Boundaries.</b> Thresholds match between the user's rule and the rubric, and values sitting exactly on a boundary are handled</span></label><span class="step">Rubrics</span><a class="go" href="#slide-22">Slide 22 &rarr;</a></div>
+        <div class="ce-item"><label><input type="checkbox" aria-label="Check 7"><span class="t"><b>Live values.</b> No criterion requires a live price, rate or availability as a fixed figure: each grades the value retrieved during the run</span></label><span class="step">Rubrics</span><a class="go" href="#slide-23">Slide 23 &rarr;</a></div>
+      </div>
+      <div class="ce-done"><span class="ce-count"></span><p>Ticks are not saved: they clear when the page reloads. The Golden Task Hub keeps these flags current.</p><a class="ce-hub" href="https://pablitofott14.github.io/golden-task-hub/#/alignments" target="_blank" rel="noopener" style="margin-top:0;">Urgent Alignments &#8599;</a></div>
+    </div>
+  </div>
+  <div class="footer-meta">Common Errors &middot; Client Flags</div>
+  <div class="footer-brand">Before You Submit</div>
 </div></div>
 <script>
 (function () {
